@@ -1,0 +1,31 @@
+{
+  "name": "downtime-gql",
+  "version": "0.1.0",
+  "description": "graphql server for downtime",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node --inspect=5858 -r ts-node/register ./src/index.ts",
+    "test": "npm test",
+    "watch": "nodemon"
+  },
+  "keywords": [
+    "graphql"
+  ],
+  "author": "Joseph Harrison-Lim",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "apollo-server": "^2.4.8",
+    "graphql": "^14.1.1",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^0.17.0",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.14"
+  },
+  "devDependencies": {
+    "@types/graphql": "^14.0.7",
+    "nodemon": "^1.18.10",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.3.3333"
+  }
+}
