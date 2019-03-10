@@ -1,0 +1,19 @@
+version: '3'
+services: 
+  server:
+    build: ./server
+    environment: 
+      PORT: 8080
+      DB_USER: admin
+      DB_PASSWORD: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  db:
+    image: postgres:10.7-alpine
+    ports:
+      - "5432:5432"
+    environment: 
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: postgres

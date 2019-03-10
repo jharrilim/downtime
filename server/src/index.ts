@@ -1,16 +1,26 @@
 import 'reflect-metadata';
+import * as dotenv from 'dotenv';
 import { ApolloServer, ServerInfo } from 'apollo-server';
 import { buildSchema } from "type-graphql";
-import { UserResolver } from "./data/models/user";
-import { PostResolver } from './data/models/post';
+import { useContainer } from'typeorm';
+import { Container } from 'typedi';
+import { connect, seed } from './data/connection';
+import { Context } from './data/resolvers/types/context';
 
 async function bootstrap(): Promise<ServerInfo> {
+    dotenv.load();
+    const port = +(process.env.PORT || 4000);
+    useContainer(Container);
+    await connect();
     const schema = await buildSchema({
-        resolvers: [UserResolver, PostResolver]
+        resolvers: [`${__dirname}/resolvers/**/*.resolver.ts`],
+        container: Container
     });
-    const server = new ApolloServer({ schema });
+    const { defaultUser } = await seed();
+    const context = { user: defaultUser } as Context;
+    const server = new ApolloServer({ schema, context });
 
-    return await server.listen();    
+    return await server.listen(port);
 }
 
 bootstrap()
