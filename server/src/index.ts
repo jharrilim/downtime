@@ -13,7 +13,7 @@ async function bootstrap(): Promise<ServerInfo> {
     useContainer(Container);
     await connect();
     const schema = await buildSchema({
-        resolvers: [`${__dirname}/resolvers/**/*.resolver.ts`],
+        resolvers: [`${__dirname}/data/resolvers/**/*.resolver.ts`],
         container: Container
     });
     const { defaultUser } = await seed();

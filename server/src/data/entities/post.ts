@@ -7,7 +7,7 @@ import { Lazy } from ".";
 @ObjectType()
 export class Post {
     @Field(type => ID)
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({ name: 'postId' })
     readonly id!: number;
 
     @Field()

@@ -7,7 +7,7 @@ import { Service } from "typedi";
 import { Post } from "../entities/post";
 
 @Service()
-@Resolver(of => Post)
+@Resolver(Post)
 export class PostResolver {
 
     constructor(
@@ -28,7 +28,6 @@ export class PostResolver {
     async createPost(@Ctx() { user }: Context, @Arg('postInput') { content }: PostInput): Promise<Post> {
         return await this.postRepository.save({
             content,
-            comments: [],
             author: user
         });
     }
