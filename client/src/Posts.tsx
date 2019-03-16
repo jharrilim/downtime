@@ -2,12 +2,15 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import Post from './Post';
+import { traceOrDate } from './time';
 
 interface Post {
   id: string;
   content: string;
+  dateCreated: string;
+  title: string;
   author: {
-    email: string;
+    username: string;
   };
 }
 
@@ -21,8 +24,8 @@ const Posts = () => (
     query={gql`
       {
         posts {
-          id content author {
-            email
+          id content title dateCreated author {
+            username
           }
         }
       }
@@ -34,8 +37,8 @@ const Posts = () => (
         console.error(error);
         return <p>Error loading content.</p>;
       }
-      return data!.posts.map(({ content, author }) => (
-        <Post content={content} title={author.email}></Post>
+      return data!.posts.map(({ content, author, dateCreated, title }) => (
+        <Post content={content} author={author.username} title={title} date={ traceOrDate(new Date(dateCreated))() }/>
       ));
     }}
   </Query>
