@@ -1,23 +1,24 @@
 import { ObjectType, Field, ID, } from "type-graphql";
 import { Post } from "./post";
 import { PrimaryGeneratedColumn, Column, OneToMany, Entity } from "typeorm";
+import { Lazy } from ".";
 
 @Entity()
 @ObjectType()
 export class User {
     @Field(type => ID)
-    @PrimaryGeneratedColumn({ name: 'userId' })
+    @PrimaryGeneratedColumn()
     readonly id!: number;
 
-    @Field()
+    @Field(type => String)
     @Column()
     username!: string;
 
-    @Field()
+    @Field(type => String)
     @Column()
     email!: string;
 
-    @Field(type => [Post], { nullable: true })
-    @OneToMany(type => Post, post => post.author, { nullable: true })
-    posts?: Post[]
+    @OneToMany(type => Post, post => post.author, { lazy: true })
+    @Field(type => [Post])
+    posts!: Lazy<Post[]>;
 }

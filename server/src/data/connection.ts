@@ -1,5 +1,5 @@
 import { createConnection, Connection, getRepository } from 'typeorm';
-import models from './entities';
+import entities from './entities';
 import { User } from './entities/user';
 
 export async function connect(): Promise<Connection> {
@@ -10,12 +10,13 @@ export async function connect(): Promise<Connection> {
         password: process.env.DB_PASSWORD || "postgres",
         port: +(process.env.DB_PORT || 5432),
         host: "db",
-        entities: models,
+        entities: entities,
         synchronize: true,
         logger: "advanced-console",
         logging: "all",
         dropSchema: true,
         cache: true,
+        
     });
 }
 

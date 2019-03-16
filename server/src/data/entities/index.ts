@@ -3,9 +3,9 @@ import { User } from './user';
 
 export type Lazy<T extends object> = Promise<T> | T;
 
-const models = [
+const entities = [
     Post,
     User
 ];
 
-export default models;
+export default entities;

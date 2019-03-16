@@ -1,14 +1,14 @@
 import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import { ApolloServer, ServerInfo } from 'apollo-server';
-import { buildSchema } from "type-graphql";
-import { useContainer } from'typeorm';
 import { Container } from 'typedi';
+import { useContainer } from'typeorm';
+import { buildSchema } from "type-graphql";
 import { connect, seed } from './data/connection';
 import { Context } from './data/resolvers/types/context';
 
 async function bootstrap(): Promise<ServerInfo> {
-    dotenv.load();
+    dotenv.config();
     const port = +(process.env.PORT || 4000);
     useContainer(Container);
     await connect();

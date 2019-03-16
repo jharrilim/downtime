@@ -5,4 +5,6 @@ import { Post } from "../../entities/post";
 export class PostInput implements Partial<Post> {
     @Field()
     content!: string;
+    @Field()
+    title!: string;
 }

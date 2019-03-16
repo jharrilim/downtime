@@ -6,7 +6,7 @@ import { Repository } from "typeorm";
 import { UserInput } from "./types/user-input";
 
 @Service()
-@Resolver(User)
+@Resolver(of => User)
 export class UserResolver {
 
     constructor(
@@ -14,8 +14,8 @@ export class UserResolver {
     ) { }
 
     @Query(returns => User, { nullable: true })
-    async user(@Arg('userId', type => Int) userId: number): Promise<User | undefined> {
-        return await this.userRepository.findOne(userId);
+    async user(@Arg('userId', type => Int) userId: number): Promise<User> {
+        return (await this.userRepository.findOne(userId))!;
     }
 
     @Query(returns => [User])
@@ -25,9 +25,9 @@ export class UserResolver {
 
     @Mutation(returns => User)
     async createUser(@Arg('userInput') userInput: UserInput): Promise<User> {
-        return await this.userRepository.save({
-            email: userInput.email,
-            username: userInput.username || userInput.email
+        const user = await this.userRepository.create({
+            ...userInput
         });
+        return await this.userRepository.save(user);
     }
 }
