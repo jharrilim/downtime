@@ -2,11 +2,13 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-boost';
 import './App.css';
-import { Typography, AppBar, Toolbar, withStyles, Drawer, CssBaseline } from '@material-ui/core';
+import { withStyles, Drawer, CssBaseline, WithStyles } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { NavItems } from '../nav-items/NavItems';
 import { Posts } from '../posts/Posts';
+import { Header } from '../header/Header';
+import { NewPostForm } from '../posts/NewPostForm';
 
 const drawerWidth = 240;
 
@@ -17,9 +19,6 @@ const client = new ApolloClient({
 const styles = (theme: Theme) => ({
   root: {
     display: 'flex',
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
   },
   drawer: {
     width: drawerWidth,
@@ -35,19 +34,15 @@ const styles = (theme: Theme) => ({
   toolbar: theme.mixins.toolbar,
 });
 
-const App = ({ classes }: any) => (
+interface AppPropTypes extends WithStyles<typeof styles> { }
+
+const App = ({ classes }: AppPropTypes) => (
   <ApolloProvider client={client}>
     <Router>
       <div className="App">
         <div className={classes.root}>
           <CssBaseline />
-          <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar>
-              <Typography variant="h6" color="inherit" noWrap>
-                Downtime
-          </Typography>
-            </Toolbar>
-          </AppBar>
+          <Header />
           <Drawer
             className={classes.drawer}
             variant="permanent"
@@ -59,6 +54,7 @@ const App = ({ classes }: any) => (
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <Route exact path="/" component={Posts} />
+            <Route path="/post" component={NewPostForm} />
           </main>
         </div>
       </div>
