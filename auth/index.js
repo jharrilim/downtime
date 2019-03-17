@@ -4,7 +4,7 @@ const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const app = require('express')();
 
 void function main() {
-    dotenv.load();
+    dotenv.config();
     const port = +(process.env.PORT || 8080);
 
     passport.use(new GoogleStrategy({
