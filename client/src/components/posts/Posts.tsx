@@ -3,6 +3,7 @@ import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import Post from './Post';
 import { traceOrDate } from '../../util/time';
+import { Typography } from '@material-ui/core';
 
 interface Post {
   id: string;
@@ -34,9 +35,18 @@ const Posts = () => (
         console.error(error);
         return <p>Error loading content.</p>;
       }
-      return data!.posts.map(({ content, author, dateCreated, title }) => (
-        <Post content={content} author={author.username} title={title} date={ traceOrDate(new Date(dateCreated))() }/>
-      ));
+      if (data!.posts.length <= 0)
+        return <Typography variant="headline">
+          There are currently no posts yet. Click the post button on the left to be the first!
+        </Typography>;
+      
+        return data!.posts.map(({ content, author, dateCreated, title }) => (
+          <Post 
+            content={content} 
+            author={author.username} 
+            title={title} 
+            date={traceOrDate(new Date(dateCreated))()}/>
+        ));
     }}
   </Query>
 );

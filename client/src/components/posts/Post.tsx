@@ -37,7 +37,7 @@ function Post(props: PostPropTypes) {
         <Typography className={classes.title} color="textSecondary" gutterBottom>
 
         </Typography>
-        <Typography component="p">
+        <Typography variant="body1">
             {props.content}
         </Typography>
       </CardContent>
