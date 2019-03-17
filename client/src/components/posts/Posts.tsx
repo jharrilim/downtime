@@ -2,7 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import gql from 'graphql-tag';
 import Post from './Post';
-import { traceOrDate } from './time';
+import { traceOrDate } from '../../util/time';
 
 interface Post {
   id: string;
@@ -18,19 +18,16 @@ interface Response {
   posts: Post[];
 }
 
+const postQuery = gql` {
+  posts {
+    id content title dateCreated author {
+      username
+    }
+  }
+}`;
 
 const Posts = () => (
-  <Query<Response>
-    query={gql`
-      {
-        posts {
-          id content title dateCreated author {
-            username
-          }
-        }
-      }
-    `}
-  >
+  <Query<Response> query={postQuery}>
     {({ loading, error, data }) => {
       if (loading) return <p>Loading...</p>;
       if (error) {

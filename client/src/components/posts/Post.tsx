@@ -5,6 +5,7 @@ import { Card, CardContent, Typography, CardHeader } from '@material-ui/core';
 const styles = createStyles({
     card: {
       minWidth: 275,
+      maxWidth: 400
     },
     bullet: {
       display: 'inline-block',
@@ -12,6 +13,7 @@ const styles = createStyles({
       transform: 'scale(0.8)',
     },
     title: {
+      textAlign: 'left',
       fontSize: 14,
     },
     pos: {

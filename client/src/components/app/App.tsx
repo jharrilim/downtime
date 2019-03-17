@@ -4,9 +4,9 @@ import ApolloClient from 'apollo-boost';
 import './App.css';
 import { Typography, AppBar, Toolbar, withStyles, Drawer, CssBaseline } from '@material-ui/core';
 import { Theme } from '@material-ui/core/styles/createMuiTheme';
-
-import { NavItems } from './NavItems';
-import { Posts } from './Posts';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { NavItems } from '../nav-items/NavItems';
+import { Posts } from '../posts/Posts';
 
 const drawerWidth = 240;
 
@@ -37,32 +37,32 @@ const styles = (theme: Theme) => ({
 
 const App = ({ classes }: any) => (
   <ApolloProvider client={client}>
-    <div className="App">
-      <div className={classes.root}>
-        <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar>
-            <Typography variant="h6" color="inherit" noWrap>
-              Downtime
+    <Router>
+      <div className="App">
+        <div className={classes.root}>
+          <CssBaseline />
+          <AppBar position="fixed" className={classes.appBar}>
+            <Toolbar>
+              <Typography variant="h6" color="inherit" noWrap>
+                Downtime
           </Typography>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={classes.drawer}
-          variant="permanent"
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.toolbar} />
-          <NavItems />
-        </Drawer>
-        <main className={classes.content}>
-          <div className={classes.toolbar} />
-          <Posts />
-        </main>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{ paper: classes.drawerPaper }}>
+
+            <div className={classes.toolbar} />
+            <NavItems />
+          </Drawer>
+          <main className={classes.content}>
+            <div className={classes.toolbar} />
+            <Route exact path="/" component={Posts} />
+          </main>
+        </div>
       </div>
-    </div>
+    </Router>
   </ApolloProvider>
 );
 export default withStyles(styles)(App);
