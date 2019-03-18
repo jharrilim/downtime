@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { NavItems } from '../nav-items/NavItems';
 import { Posts } from '../posts/Posts';
 import { Header } from '../header/Header';
-import { NewPostForm } from '../posts/NewPostForm';
+import { NewPost } from '../posts/NewPostForm';
 
 const drawerWidth = 240;
 
@@ -54,7 +54,7 @@ const App = ({ classes }: AppPropTypes) => (
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <Route exact path="/" component={Posts} />
-            <Route path="/post" component={NewPostForm} />
+            <Route path="/post" component={NewPost} />
           </main>
         </div>
       </div>
