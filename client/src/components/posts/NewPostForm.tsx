@@ -53,7 +53,7 @@ const NewPostFormMutation = (props: NewPostFormPropTypes) => (
       if (loading) return <Typography variant="headline" >Loading...</Typography>;
       if (error) {
         console.error(error);
-        return <Typography variant="headline" >Error creating post. ${error.message}</Typography>;
+        return <Typography variant="headline" >Error creating post. {error.message}</Typography>;
       }
       return <NewPostForm onSubmit={(evt) => mutateFn()} classes={props.classes} />;
     }}
