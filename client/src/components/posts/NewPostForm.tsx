@@ -18,8 +18,13 @@ const styles = (theme: Theme) => ({
   },
 });
 
+interface FormState {
+  title: string;
+  content: string;
+}
+
 interface NewPostFormPropTypes extends WithStyles<typeof styles> {
-  onSubmit: FormEventHandler;
+  onSubmit: (state: FormState) => any;
 }
 
 const mutation = gql`
@@ -37,18 +42,18 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
   const [postState, mutState] = useState({
     title: '',
     content: ''
-  });
-  
+  } as FormState);
+
   return (
     <Paper>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={_ => onSubmit(postState)}>
         <TextField id="titleInput" placeholder="Title" InputProps={classes} onChange={e => mutState({
           title: e.target.value,
           content: postState.content
-        })}  />
+        })} />
         <br />
-        <TextField id="contentInput" placeholder="Write about something here..." multiline 
-          onChange={ e => mutState({
+        <TextField id="contentInput" placeholder="Write about something here..." multiline
+          onChange={e => mutState({
             title: postState.title,
             content: e.target.value
           })}
@@ -70,7 +75,7 @@ const NewPostFormMutation = (props: NewPostFormPropTypes) => (
         console.error(error);
         return <Typography variant="headline" >Error creating post. {error.message}</Typography>;
       }
-      return <NewPostForm onSubmit={(evt) => mutateFn()} classes={props.classes} />;
+      return <NewPostForm onSubmit={(evt) => mutateFn({ variables: { postInput: evt } })} classes={props.classes} />;
     }}
   </Mutation>
 );
