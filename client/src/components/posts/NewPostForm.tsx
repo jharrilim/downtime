@@ -1,4 +1,4 @@
-import React, { FormEventHandler } from 'react';
+import React, { FormEventHandler, useReducer, useState } from 'react';
 import { FormControl, Paper, Typography, Theme, WithStyles, TextField, withStyles, Button, Icon } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -33,19 +33,34 @@ mutation createPost($postInput: PostInput!) {
 `;
 
 // TODO: Add state, send form inputs from state to submit
-const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => (
-  <Paper>
-    <form onSubmit={onSubmit}>
-      <TextField id="titleInput" placeholder="Title" InputProps={classes} />
-      <br />
-      <TextField id="contentInput" placeholder="Write about something here..." multiline />
-      <br />
-      <Button type="submit" variant="contained" color="primary" className={classes.button}>
-        Send <Icon className={classes.rightIcon}>send</Icon>
-      </Button>
-    </form>
-  </Paper>
-);
+const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
+  const [postState, mutState] = useState({
+    title: '',
+    content: ''
+  });
+  
+  return (
+    <Paper>
+      <form onSubmit={onSubmit}>
+        <TextField id="titleInput" placeholder="Title" InputProps={classes} onChange={e => mutState({
+          title: e.target.value,
+          content: postState.content
+        })}  />
+        <br />
+        <TextField id="contentInput" placeholder="Write about something here..." multiline 
+          onChange={ e => mutState({
+            title: postState.title,
+            content: e.target.value
+          })}
+        />
+        <br />
+        <Button type="submit" variant="contained" color="primary" className={classes.button}>
+          Send <Icon className={classes.rightIcon}>send</Icon>
+        </Button>
+      </form>
+    </Paper>
+  );
+};
 
 const NewPostFormMutation = (props: NewPostFormPropTypes) => (
   <Mutation mutation={mutation}>
