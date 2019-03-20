@@ -13,7 +13,8 @@ import { NewPost } from '../posts/NewPostForm';
 const drawerWidth = 240;
 
 const client = new ApolloClient({
-  uri: process.env.SERVER_URL || 'http://localhost:8080'
+  uri: process.env.NOW_URL ? process.env.NOW_URL + '/api' : 
+    process.env.SERVER_URL || 'http://localhost:8080'
 });
 
 const styles = (theme: Theme) => ({
