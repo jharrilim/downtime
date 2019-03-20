@@ -1,0 +1,12 @@
+{
+    "version": 2,
+    "name": "downtime",
+    "builds": [
+        { "src": "client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } },
+        { "src": "server/src/*.ts", "use": "@now/node" }
+    ],
+    "routes": [
+        { "src": "/api", "dest": "/server/$1" },
+        { "src": "/(.*)", "dest": "/client/$1" }
+    ]
+}
