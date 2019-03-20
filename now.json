@@ -6,7 +6,7 @@
     },
     "builds": [
         { "src": "client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } },
-        { "src": "server/src/index.ts", "use": "@now/node" }
+        { "src": "server/src/index.ts", "use": "@now/node-server@canary" }
     ],
     "routes": [
         { "src": "/api", "dest": "/server/src/index.ts" },
