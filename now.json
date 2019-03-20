@@ -3,10 +3,10 @@
     "name": "downtime",
     "builds": [
         { "src": "client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } },
-        { "src": "server/src/*.ts", "use": "@now/node" }
+        { "src": "server/src/index.ts", "use": "@now/node" }
     ],
     "routes": [
         { "src": "/api", "dest": "/server/src/index.ts" },
-        { "src": "/(.*)", "dest": "/client/$1" }
+        { "src": "/.*", "dest": "/client/$1" }
     ]
 }
