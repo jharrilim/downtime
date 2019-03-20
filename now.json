@@ -1,6 +1,9 @@
 {
     "version": 2,
     "name": "downtime",
+    "env": {
+        "PORT": 443
+    },
     "builds": [
         { "src": "client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } },
         { "src": "server/src/index.ts", "use": "@now/node" }
