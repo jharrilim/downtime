@@ -23,26 +23,17 @@ mutation createUser($userInput: UserInput!) {
 
 const SignUpForm = ({ classes }: SignUpPropTypes) => {
   const [formIsOpen, mutFormIsOpen] = useState(false);
-
-  const [passwordValidity, mutPasswordValidity] = useState({
-    validLength: false,
-    containsNumber: false,
-    containsLowercase: false,
-    containsUppercase: false
-  });
+  const [passwordIsValid, mutPasswordIsValid] = useState(false);
   const [passwordIcon, mutPasswordIcon] = useState(<ErrorIcon />);
-  const passwordChanged = (password: string) => mutPasswordValidity({
-    validLength: password.length >= 8 ? true : false,
-    containsNumber: password.search(/[\d]/) > -1 ? true : false,
-    containsLowercase: password.search(/[a-z]/) > -1 ? true : false,
-    containsUppercase: password.search(/[A-Z]/) > -1 ? true : false
-  });
+  const passwordChanged = (password: string) => mutPasswordIsValid(
+    password.length >= 8 &&
+    password.search(/[\d]/) > -1 &&
+    password.search(/[a-z]/) > -1 &&
+    password.search(/[A-Z]/) > -1
+  );
 
   useEffect(() => {
-    const { validLength, containsLowercase, containsNumber, containsUppercase } = passwordValidity;
-    mutPasswordIcon(validLength && containsLowercase && containsNumber && containsUppercase 
-      ? <CheckCircleIcon /> : <ErrorIcon />
-    );
+    mutPasswordIcon(passwordIsValid ? <CheckCircleIcon /> : <ErrorIcon />);
   });
 
   return (
@@ -79,8 +70,8 @@ const SignUpForm = ({ classes }: SignUpPropTypes) => {
             />
             {passwordIcon}
             <FormHelperText id="password-helper-text">
-            Password must be greater than 8 characters,
-            contain atleast one lowercase letter, atleast one uppercase letter, and atleast one number.
+              Password must be greater than 8 characters,
+              contain atleast one lowercase letter, atleast one uppercase letter, and atleast one number.
             </FormHelperText>
             <TextField
               margin="dense"
@@ -95,10 +86,14 @@ const SignUpForm = ({ classes }: SignUpPropTypes) => {
             <Button onClick={_ => mutFormIsOpen(false)} color="primary">
               Cancel
             </Button>
-            <Button onClick={_ => {
-              // TODO: Handle form submition
-              mutFormIsOpen(false);
-            }} color="primary">
+            <Button 
+              onClick={_ => {
+                // TODO: Handle form submition
+                mutFormIsOpen(false);
+              }}
+              color="primary"
+              disabled={!passwordIsValid}
+            >
               Sign Up
             </Button>
           </DialogActions>
