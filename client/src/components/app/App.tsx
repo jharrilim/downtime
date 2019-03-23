@@ -9,6 +9,7 @@ import { NavItems } from '../nav-items/NavItems';
 import { Posts } from '../posts/Posts';
 import { Header } from '../header/Header';
 import { NewPost } from '../posts/NewPostForm';
+import { SignUpForm } from '../sign-up/SignUp';
 
 const drawerWidth = 240;
 
@@ -56,6 +57,7 @@ const App = ({ classes }: AppPropTypes) => (
             <div className={classes.toolbar} />
             <Route exact path="/" component={Posts} />
             <Route path="/post" component={NewPost} />
+            <Route path="/signup" component={SignUpForm} />
           </main>
         </div>
       </div>
