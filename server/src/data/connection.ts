@@ -1,6 +1,7 @@
 import { createConnection, Connection, getRepository } from 'typeorm';
 import entities from './entities';
 import { User } from './entities/user';
+import { encryptPassword } from '../security';
 
 export async function connect(): Promise<Connection> {
     
@@ -41,9 +42,12 @@ export async function connect(): Promise<Connection> {
 
 export async function seed() {
     const userRepository = getRepository(User);
+    const { passwordHash, salt } = encryptPassword('foobar');
     const defaultUser = userRepository.create({
         email: 'foo@mail.com',
-        username: 'foo@mail.com'
+        username: 'foo@mail.com',
+        passwordHash,
+        salt
     });
     await userRepository.save(defaultUser);
     return { defaultUser };

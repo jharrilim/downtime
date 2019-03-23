@@ -18,6 +18,12 @@ export class User {
     @Column()
     email!: string;
 
+    @Column()
+    passwordHash!: string;
+
+    @Column()
+    salt!: string;
+
     @OneToMany(type => Post, post => post.author, { lazy: true })
     @Field(type => [Post])
     posts!: Lazy<Post[]>;
