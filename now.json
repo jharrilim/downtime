@@ -11,6 +11,6 @@
         { "src": "/favicon.ico", "dest": "client/public/favicon.ico" },
         { "src": "/manifest.json", "dest": "/client/public/manifest.json" },
         { "src": "/service-worker.js", "headers": { "cache-control": "s-maxage=0" }, "dest": "client/src/service-worker.js" },
-        { "src": "/(.*)", "headers": {"cache-control": "s-maxage=0"}, "dest": "client/public/index.html" }
+        { "src": "/", "headers": {"cache-control": "s-maxage=0"}, "dest": "client/public/index.html" }
     ]
 }
