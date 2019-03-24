@@ -1,7 +1,12 @@
-FROM       node:11-slim
+FROM       node:11-slim as BUILD
 WORKDIR    /app
 COPY       package.json .
 COPY       package-lock.json .
 RUN        npm ci
 COPY       . .
-ENTRYPOINT [ "npm", "start" ]
+RUN        npm run build
+
+FROM       node:11-slim as RUNTIME
+WORKDIR    /app
+COPY       --from=BUILD /app/dist .
+ENTRYPOINT [ "node", "." ]
