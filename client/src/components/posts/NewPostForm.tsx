@@ -63,16 +63,19 @@ const NewPostFormMutation = (props: NewPostFormPropTypes) => (
   <Mutation 
     mutation={createPost}
     update={(cache, {data}: FetchResult<CreatePostReturnType> ) => {
-      const posts = cache.readQuery<PostModel[]>({query: postsQuery});
-      if(data !== undefined && posts !== null)
+      let posts = cache.readQuery<Array<PostModel>>({query: postsQuery});
+      if (!posts) {
+        posts = [];
+      }
+      if(data !== undefined) {
+        posts.push({...data});
         cache.writeQuery({
           query: postsQuery,
-          data: { 
-            posts: posts.concat({
-              ...data
-            })
+          data: {
+            posts
           }
         });
+      }
     }}
   >
     {(mutateFn, { loading, error }) => {
