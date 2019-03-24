@@ -5,11 +5,9 @@
         "PORT": "443"
     },
     "builds": [
-        { "src": "client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } },
-        { "src": "server/src/index.ts", "use": "@now/node-server@canary" }
+        { "src": "client/package.json", "use": "@now/static-build", "config": { "distDir": "build" } }
     ],
     "routes": [
-        { "src": "/api", "dest": "/server/src/index.ts" },
-        { "src": "/www/.*", "dest": "/client/$1" }
+        { "src": "/", "dest": "/client/$1" }
     ]
 }
