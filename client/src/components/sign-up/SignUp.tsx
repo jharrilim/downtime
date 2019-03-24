@@ -136,7 +136,7 @@ const SignUpForm = ({ classes, onSubmit }: SignUpPropTypes) => {
 
 const SignUpMutation = (props: SignUpPropTypes) => (
   <Mutation mutation={mutation}>
-  {(mutateFn, { loading, error }) => {
+  {(mutateFn, { loading, error, data }) => {
     return <SignUpForm classes={props.classes} onSubmit={evt => mutateFn({variables: { userInput: evt }})}/>;
   }}
   </Mutation>
