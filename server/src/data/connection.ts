@@ -42,10 +42,10 @@ export async function connect(): Promise<Connection> {
 
 export async function seed() {
     const userRepository = getRepository(User);
-    const { passwordHash, salt } = encryptPassword('foobar');
+    const { passwordHash, salt } = encryptPassword(process.env.DB_PASSWORD || 'foobar');
     const defaultUser = userRepository.create({
-        email: 'foo@mail.com',
-        username: 'foo@mail.com',
+        email: process.env.DEFAULT_MAIL_ADDRESS || 'foo@mail.com',
+        username: process.env.DB_USER || 'foo@mail.com',
         passwordHash,
         salt
     });
