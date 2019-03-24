@@ -1,7 +1,9 @@
-import React, { FormEventHandler, useReducer, useState } from 'react';
-import { FormControl, Paper, Typography, Theme, WithStyles, TextField, withStyles, Button, Icon } from '@material-ui/core';
-import { Mutation } from 'react-apollo';
-import gql from 'graphql-tag';
+import React, { useState } from 'react';
+import { Paper, Typography, Theme, WithStyles, TextField, withStyles, Button, Icon } from '@material-ui/core';
+import { Mutation, FetchResult } from 'react-apollo';
+import { postsQuery } from '../../data/queries/posts';
+import { createPost, CreatePostReturnType } from '../../data/mutations/create-post';
+import { PostModel } from '../../data/models/Post.model';
 
 const styles = (theme: Theme) => ({
   title: {
@@ -26,16 +28,6 @@ interface FormState {
 interface NewPostFormPropTypes extends WithStyles<typeof styles> {
   onSubmit: (state: FormState) => any;
 }
-
-const mutation = gql`
-mutation createPost($postInput: PostInput!) {
-  createPost(postInput: $postInput) {
-    content title dateCreated author {
-      username
-    }
-  }
-}
-`;
 
 // TODO: Add state, send form inputs from state to submit
 const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
@@ -68,7 +60,21 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
 };
 
 const NewPostFormMutation = (props: NewPostFormPropTypes) => (
-  <Mutation mutation={mutation}>
+  <Mutation 
+    mutation={createPost}
+    update={(cache, {data}: FetchResult<CreatePostReturnType> ) => {
+      const posts = cache.readQuery<PostModel[]>({query: postsQuery});
+      if(data !== undefined && posts !== null)
+        cache.writeQuery({
+          query: postsQuery,
+          data: { 
+            posts: posts.concat({
+              ...data
+            })
+          }
+        });
+    }}
+  >
     {(mutateFn, { loading, error }) => {
       if (loading) return <Typography variant="headline" >Loading...</Typography>;
       if (error) {

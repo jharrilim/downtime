@@ -3,7 +3,7 @@ services:
   client:
     build: ./client
     ports:
-      - "80:80"
+      - "4000:80"
     depends_on: 
       - server
   server:
