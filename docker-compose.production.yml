@@ -1,0 +1,29 @@
+version: '3'
+services:
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on: 
+      - server
+    restart: always
+  server:
+    build: ./server
+    environment: 
+      PORT: 8080
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      NODE_ENV: production
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: always
+  db:
+    image: postgres:10.7-alpine
+    environment: 
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    restart: always
+    volumes: 
+      - ~/data:/var/lib/postgresql/data

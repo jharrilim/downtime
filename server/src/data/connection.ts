@@ -34,7 +34,7 @@ export async function connect(): Promise<Connection> {
         synchronize: true,
         logger: 'advanced-console',
         logging: 'all',
-        dropSchema: true,
+        dropSchema: process.env.NODE_ENV !== 'production',
         cache: true,
         
     });
