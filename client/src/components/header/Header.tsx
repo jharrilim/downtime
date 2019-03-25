@@ -3,7 +3,8 @@ import { AppBar, Toolbar, Typography, WithStyles, withStyles, Theme } from '@mat
 
 const styles = (theme: Theme) => ({
     appBar: {
-        zIndex: theme.zIndex.drawer + 1
+        zIndex: theme.zIndex.drawer + 1,
+        color: 'secondary'
     }
 });
 

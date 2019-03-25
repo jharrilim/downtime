@@ -2,7 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { Post } from './Post';
 import { traceOrDate } from '../../util/time';
-import { Typography } from '@material-ui/core';
+import { Typography, Grid } from '@material-ui/core';
 import { postsQuery } from '../../data/queries/posts';
 import { PostModel } from '../../data/models/Post.model';
 
@@ -26,13 +26,19 @@ const Posts = () => (
           </Typography>
         );
 
-      return data!.posts.map(({ content, author, dateCreated, title }) => (
-        <Post
-          content={content}
-          author={author.username}
-          title={title}
-          date={traceOrDate(new Date(dateCreated!))()} />
-      ));
+      return (
+        <Grid container spacing={24}>
+          {data!.posts.map(({ content, author, dateCreated, title }) => (
+              <Grid item>
+                <Post
+                  content={content}
+                  author={author.username}
+                  title={title}
+                  date={traceOrDate(new Date(dateCreated!))()} />
+              </Grid>
+          ))}
+        </Grid>
+      );
     }}
   </Query>
 );

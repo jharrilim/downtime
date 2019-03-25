@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
-import { Paper, Typography, Theme, WithStyles, TextField, withStyles, Button, Icon } from '@material-ui/core';
+import { Paper, Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid } from '@material-ui/core';
 import { Mutation, FetchResult } from 'react-apollo';
 import { postsQuery } from '../../data/queries/posts';
 import { createPost, CreatePostReturnType } from '../../data/mutations/create-post';
 import { PostModel } from '../../data/models/Post.model';
 
 const styles = (theme: Theme) => ({
+  form: {
+    width: "90%"
+  },
   title: {
-    fontSize: 50
+    width: "95%",
+    marginTop: theme.spacing.unit
+  },
+  content: {
+    marginTop: theme.spacing.unit,
+    width: "95%"
   },
   button: {
     margin: theme.spacing.unit,
@@ -18,6 +26,9 @@ const styles = (theme: Theme) => ({
   rightIcon: {
     marginLeft: theme.spacing.unit,
   },
+  titleInput: {
+    fontSize: "6em"
+  }
 });
 
 interface FormState {
@@ -37,38 +48,56 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
   } as FormState);
 
   return (
-    <Paper>
-      <form onSubmit={_ => onSubmit(postState)}>
-        <TextField id="titleInput" placeholder="Title" InputProps={classes} onChange={e => mutState({
-          title: e.target.value,
-          content: postState.content
-        })} />
-        <br />
-        <TextField id="contentInput" placeholder="Write about something here..." multiline
-          onChange={e => mutState({
-            title: postState.title,
-            content: e.target.value
-          })}
-        />
-        <br />
-        <Button type="submit" variant="contained" color="primary" className={classes.button}>
-          Send <Icon className={classes.rightIcon}>send</Icon>
-        </Button>
-      </form>
-    </Paper>
+    <Grid container justify="center">
+      <Paper className={classes.form}>
+        <form onSubmit={_ => onSubmit(postState)}>
+          <TextField id="titleInput"
+            placeholder="Title"
+            className={classes.title}
+            fullWidth
+            InputProps={{
+              classes: {
+                input: classes.titleInput,
+                disableUnderline: true
+              }
+            }}
+            onChange={e => mutState({
+              title: e.target.value,
+              content: postState.content
+            })}
+          />
+          <br />
+          <TextField
+            id="contentInput"
+            placeholder="Write about something here..."
+            multiline
+            rows={15}
+            className={classes.content}
+            onChange={e => mutState({
+              title: postState.title,
+              content: e.target.value
+            })}
+          />
+          <br />
+          <Button type="submit" variant="contained" color="primary" className={classes.button}>
+            Post <Icon className={classes.rightIcon}>send</Icon>
+          </Button>
+        </form>
+      </Paper>
+    </Grid>
   );
 };
 
 const NewPostFormMutation = (props: NewPostFormPropTypes) => (
-  <Mutation 
+  <Mutation
     mutation={createPost}
-    update={(cache, {data}: FetchResult<CreatePostReturnType> ) => {
-      let posts = cache.readQuery<Array<PostModel>>({query: postsQuery});
+    update={(cache, { data }: FetchResult<CreatePostReturnType>) => {
+      let posts = cache.readQuery<Array<PostModel>>({ query: postsQuery });
       if (!posts) {
         posts = [];
       }
-      if(data !== undefined) {
-        posts.push({...data});
+      if (data !== undefined) {
+        posts.push({ ...data });
         cache.writeQuery({
           query: postsQuery,
           data: {
