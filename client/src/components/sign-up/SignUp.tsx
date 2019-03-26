@@ -33,7 +33,7 @@ mutation createUser($userInput: UserInput!) {
 }
 `;
 
-const SignUpForm = ({ classes, onSubmit }: SignUpPropTypes) => {
+const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) => {
   const [formIsOpen, mutFormIsOpen] = useState(false);
   const [email, mutEmail] = useState('');
   const [password, mutPassword] = useState('');
@@ -132,16 +132,16 @@ const SignUpForm = ({ classes, onSubmit }: SignUpPropTypes) => {
       </Dialog>
     </>
   );
-};
+});
 
-const SignUpMutation = (props: SignUpPropTypes) => (
+const SignUpMutation = () => (
   <Mutation mutation={mutation}>
   {(mutateFn, { loading, error, data }) => {
-    return <SignUpForm classes={props.classes} onSubmit={evt => mutateFn({variables: { userInput: evt }})}/>;
+    return <SignUpForm onSubmit={evt => mutateFn({variables: { userInput: evt }})}/>;
   }}
   </Mutation>
 );
 
 
-const SignUp = withStyles(styles)(SignUpMutation);
+const SignUp = SignUpMutation;
 export { SignUp };
