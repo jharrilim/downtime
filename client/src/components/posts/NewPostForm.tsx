@@ -7,18 +7,23 @@ import { PostModel } from '../../data/models/Post.model';
 
 const styles = (theme: Theme) => ({
   form: {
-    width: "90%"
+    width: "90%",
   },
   title: {
     width: "95%",
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit,
+    border: 'none'
   },
   content: {
     marginTop: theme.spacing.unit,
     width: "95%"
   },
   button: {
+    backgroundColor: theme.palette.grey[200],
     margin: theme.spacing.unit,
+    paddingLeft: "1em",
+    paddingRight: "1em"
+
   },
   leftIcon: {
     marginRight: theme.spacing.unit,
@@ -27,8 +32,11 @@ const styles = (theme: Theme) => ({
     marginLeft: theme.spacing.unit,
   },
   titleInput: {
-    fontSize: "6em"
-  }
+    fontSize: "5em",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "3em"
+    }
+  },
 });
 
 interface FormState {
@@ -49,12 +57,13 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
 
   return (
     <Grid container justify="center">
-      <Paper className={classes.form}>
+      <Grid xs={"auto"}>
         <form onSubmit={_ => onSubmit(postState)}>
           <TextField id="titleInput"
             placeholder="Title"
             className={classes.title}
             fullWidth
+            required
             InputProps={{
               classes: {
                 input: classes.titleInput,
@@ -83,7 +92,7 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
             Post <Icon className={classes.rightIcon}>send</Icon>
           </Button>
         </form>
-      </Paper>
+      </Grid>
     </Grid>
   );
 };

@@ -2,7 +2,7 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-boost';
 import { withStyles, CssBaseline, WithStyles, Toolbar, Button, Typography } from '@material-ui/core';
-import { MuiThemeProvider, createMuiTheme, Theme } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme, Theme, createStyles } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -29,7 +29,7 @@ const theme = createMuiTheme({
   }
 });
 
-const styles = (theme: Theme) => ({
+const styles = (theme: Theme) => createStyles({
   layout: {
     width: 'auto',
     marginLeft: theme.spacing.unit * 3,

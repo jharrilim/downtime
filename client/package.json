@@ -11,6 +11,7 @@
     "apollo-boost": "^0.3.1",
     "dotenv": "^7.0.0",
     "graphql": "^14.1.1",
+    "markdown-to-jsx": "^6.9.3",
     "moment": "^2.24.0",
     "react": "^16.8.4",
     "react-apollo": "^2.5.2",

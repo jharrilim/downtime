@@ -1,11 +1,15 @@
 import React from 'react';
-import { withStyles, createStyles, WithStyles } from '@material-ui/core/styles';
+import { withStyles, createStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import { Card, CardContent, Typography, CardHeader } from '@material-ui/core';
 
-const styles = createStyles({
+const styles = (theme: Theme) => createStyles({
   card: {
     minWidth: 275,
-    maxWidth: 400
+    maxWidth: 400,
+    backgroundColor: "rgb(248, 248, 248)"
+  },
+  content: {
+    textAlign: "justify"
   },
   bullet: {
     display: 'inline-block',
@@ -37,9 +41,15 @@ const Post = withStyles(styles) ((props: PostPropTypes) => {
         <Typography className={classes.title} color="textSecondary" gutterBottom>
 
         </Typography>
-        <Typography variant="body1">
-          {props.content}
-        </Typography>
+        {props.content.split('\n').map(content => (
+          <>
+            <Typography variant="body1" className={classes.content}>
+              {content}
+            </Typography>
+          </>
+        ))
+
+        }
       </CardContent>
     </Card>
   );
