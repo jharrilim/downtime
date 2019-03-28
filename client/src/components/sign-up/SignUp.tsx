@@ -3,8 +3,7 @@ import gql from 'graphql-tag';
 import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles } from '@material-ui/core';
 import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
-import { createUser, CreateUser } from '../../data/mutations/create-user';
-import { Provider } from '../../app-context';
+import { createUser } from '../../data/mutations/create-user';
 
 const styles = (theme: Theme) => ({
   email: {
