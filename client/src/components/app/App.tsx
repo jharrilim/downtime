@@ -22,7 +22,6 @@ const client = new ApolloClient({
     process.env.SERVER_URL || `http://${location.hostname}:8080`
 });
 
-
 const theme = createMuiTheme({
   palette: {
     primary: grey
@@ -112,6 +111,9 @@ const App = ({ classes }: AppPropTypes) => (
               >
                 Downtime
               </Typography>
+              { localStorage.getItem('user') &&
+                <Typography variant="subtitle2">{JSON.parse(localStorage.getItem('user')!).username}</Typography>
+              }
               <IconButton>
                 <SearchIcon />
               </IconButton>

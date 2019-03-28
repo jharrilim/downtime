@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import gql from 'graphql-tag';
 import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles } from '@material-ui/core';
 import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
+import { createUser, CreateUser } from '../../data/mutations/create-user';
+import { Provider } from '../../app-context';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -25,13 +27,7 @@ interface SignUpPropTypes extends WithStyles<typeof styles> {
   onSubmit: (evt: UserInput) => any;
 }
 
-const mutation = gql`
-mutation createUser($userInput: UserInput!) {
-  createUser(userInput: $userInput) {
-    username email
-  }
-}
-`;
+
 
 const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) => {
   const [formIsOpen, mutFormIsOpen] = useState(false);
@@ -135,8 +131,16 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
 });
 
 const SignUpMutation = () => (
-  <Mutation mutation={mutation}>
+  <Mutation mutation={createUser}>
   {(mutateFn, { loading, error, data }) => {
+    if(data) {
+      const userInfo = {
+        id: data.createUser.id,
+        username: data.createUser.username,
+        email: data.createUser.email
+      }
+      localStorage.setItem('user', JSON.stringify(userInfo));
+    }
     return <SignUpForm onSubmit={evt => mutateFn({variables: { userInput: evt }})}/>;
   }}
   </Mutation>

@@ -29,8 +29,9 @@ const Posts = () => (
       return (
         <Grid container spacing={24}>
           {data!.posts.map(({ content, author, dateCreated, title }) => (
-              <Grid item>
+              <Grid item lg={6} sm={12}>
                 <Post
+                  key={`${author.username}-${title}`}
                   content={content}
                   author={author.username}
                   title={title}

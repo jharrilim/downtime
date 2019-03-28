@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Paper, Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid } from '@material-ui/core';
+import { Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid } from '@material-ui/core';
 import { Mutation, FetchResult } from 'react-apollo';
 import { postsQuery } from '../../data/queries/posts';
 import { createPost, CreatePostReturnType } from '../../data/mutations/create-post';
@@ -57,7 +57,7 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
 
   return (
     <Grid container justify="center">
-      <Grid xs={"auto"}>
+      <Grid item xs={12}>
         <form onSubmit={_ => onSubmit(postState)}>
           <TextField id="titleInput"
             placeholder="Title"
@@ -67,7 +67,7 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
             InputProps={{
               classes: {
                 input: classes.titleInput,
-                disableUnderline: true
+                underline: 'none'
               }
             }}
             onChange={e => mutState({
