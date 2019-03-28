@@ -2,6 +2,7 @@ const passport = require('passport');
 const dotenv = require('dotenv');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const app = require('express')();
+const { User } = require('./user.model');
 
 void function main() {
     dotenv.config();
