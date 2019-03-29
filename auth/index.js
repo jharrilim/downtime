@@ -3,11 +3,12 @@ const dotenv = require('dotenv');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const app = require('express')();
 const { User } = require('./user.model');
+const mongoose = require('mongoose');
 
 void function main() {
     dotenv.config();
     const port = +(process.env.PORT || 8080);
-
+    mongoose.connect(`mongodb://${process.env.AUTHDB}`, { useNewUrlParser: true });
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
@@ -35,7 +36,7 @@ void function main() {
     //   which, in this example, will redirect the user to the home page.
     app.get('/auth/google/callback', 
         passport.authenticate('google',
-            { failureRedirect: '/login' }
+            { failureRedirect: 'http://server/login-failed' }
         ),
         function (req, res) {
             res.redirect('http://server');
