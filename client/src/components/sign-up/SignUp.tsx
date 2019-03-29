@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react';
-import gql from 'graphql-tag';
+import React, { useState } from 'react';
 import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles } from '@material-ui/core';
 import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
 import { createUser } from '../../data/mutations/create-user';
+import { setUser, userIsLoggedIn, unsetUser } from '../../data/storage/user-storage';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -50,6 +50,7 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
     mutEmail(email);
     mutEmailIsValid(email.search(/\S+@\S+\.\S+/) > -1);
   }
+
   const dialogClosed = () => {
     mutFormIsOpen(false);
     mutEmailIsValid(false);
@@ -60,9 +61,15 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
 
   return (
     <>
-      <Button variant="outlined" color="primary" onClick={_ => mutFormIsOpen(true)}>
-        Sign Up
+      {
+        userIsLoggedIn ? 
+        <Button variant="outlined" color="primary" onClick={_ => mutFormIsOpen(true)}>
+          Sign Up
         </Button>
+        :
+        <Button variant="outlined" color="secondary" onClick={_ => unsetUser()} >Sign Out</Button>
+      }
+
       <Dialog
         open={formIsOpen}
         onClose={_ => dialogClosed()}
@@ -131,14 +138,14 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
 
 const SignUpMutation = () => (
   <Mutation mutation={createUser}>
-  {(mutateFn, { loading, error, data }) => {
+  {(mutateFn, { data }) => {
     if(data) {
       const userInfo = {
         id: data.createUser.id,
         username: data.createUser.username,
         email: data.createUser.email
       }
-      localStorage.setItem('user', JSON.stringify(userInfo));
+      setUser(userInfo);
     }
     return <SignUpForm onSubmit={evt => mutateFn({variables: { userInput: evt }})}/>;
   }}

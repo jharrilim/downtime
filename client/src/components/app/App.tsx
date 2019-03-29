@@ -13,6 +13,7 @@ import HomeIcon from '@material-ui/icons/Home';
 import { NewPost } from '../posts/NewPostForm';
 import { SignUp } from '../sign-up/SignUp';
 import { grey } from '@material-ui/core/colors';
+import { getUser, userIsLoggedIn } from '../../data/storage/user-storage';
 
 const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
@@ -111,8 +112,8 @@ const App = ({ classes }: AppPropTypes) => (
               >
                 Downtime
               </Typography>
-              { localStorage.getItem('user') &&
-                <Typography variant="subtitle2">{JSON.parse(localStorage.getItem('user')!).username}</Typography>
+              { userIsLoggedIn() &&
+                <Typography variant="subtitle2">{getUser()!.username}</Typography>
               }
               <IconButton>
                 <SearchIcon />
