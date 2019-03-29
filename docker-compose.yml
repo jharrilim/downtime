@@ -1,5 +1,16 @@
 version: '3'
 services:
+  auth:
+    build: ./auth
+    ports:
+      - "5000:8080"
+    environment:
+      PORT: 5000
+      AUTHDB: authdb:8080
+  authdb:
+    image: mongo:4
+    ports:
+      - "6000:8080"
   client:
     build: ./client
     ports:
