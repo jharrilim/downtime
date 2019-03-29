@@ -5,7 +5,9 @@ const {
 const userSchema = new Schema({
     googleId: String,
     username: String,
-    email: String
+    email: String,
+    passwordHash: String,
+    passwordSalt: String
 });
 
 export const User = model('user', userSchema);
