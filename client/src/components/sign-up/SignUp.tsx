@@ -62,12 +62,14 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
   return (
     <>
       {
-        userIsLoggedIn ? 
+        !userIsLoggedIn() ? 
         <Button variant="outlined" color="primary" onClick={_ => mutFormIsOpen(true)}>
           Sign Up
         </Button>
         :
-        <Button variant="outlined" color="secondary" onClick={_ => unsetUser()} >Sign Out</Button>
+        <Button variant="outlined" color="secondary" onClick={_ => unsetUser()}>
+          Sign Out
+        </Button>
       }
 
       <Dialog
@@ -76,7 +78,7 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Sign Up to Downtime</DialogTitle>
-        <form onSubmit={_ => onSubmit({password, email})}>
+        <form onSubmit={e => e.preventDefault()}>
           <DialogContent>
             <DialogContentText>
               To make posts on our website, you will need to sign up first.
@@ -119,11 +121,11 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
               Cancel
             </Button>
             <Button
-              onClick={_ => {
-                // TODO: Handle form submition
+              onClick={e => {
+                e.preventDefault();
                 mutFormIsOpen(false);
+                onSubmit({password, email});
               }}
-              type="submit"
               color="primary"
               disabled={!( emailIsValid && passwordIsValid && password === confirmPassword)}
             >

@@ -16,7 +16,8 @@ export function getUser() {
 }
 
 export function userIsLoggedIn() {
-    return !!localStorage.getItem('user');
+    const user = localStorage.getItem('user');
+    return user !== undefined && user !== null;
 }
 
 export function unsetUser() {
