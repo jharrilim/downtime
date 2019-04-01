@@ -4,6 +4,7 @@ import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
 import { createUser } from '../../data/mutations/create-user';
 import { setUser, userIsLoggedIn, unsetUser } from '../../data/storage/user-storage';
+import { SignUpButton } from './SignUpButton';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -28,7 +29,7 @@ interface SignUpPropTypes extends WithStyles<typeof styles> {
 
 
 
-const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) => {
+const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) => {
   const [formIsOpen, mutFormIsOpen] = useState(false);
   const [email, mutEmail] = useState('');
   const [password, mutPassword] = useState('');
@@ -61,17 +62,11 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
 
   return (
     <>
-      {
-        !userIsLoggedIn() ? 
-        <Button variant="outlined" color="primary" onClick={_ => mutFormIsOpen(true)}>
-          Sign Up
-        </Button>
-        :
-        <Button variant="outlined" color="secondary" onClick={_ => unsetUser()}>
-          Sign Out
-        </Button>
-      }
-
+      <SignUpButton
+        isLoggedIn={userIsLoggedIn()}
+        onSignUpClick={_ => mutFormIsOpen(true)}
+        onSignOutClick={_ => unsetUser()}
+      />
       <Dialog
         open={formIsOpen}
         onClose={_ => dialogClosed()}
@@ -124,10 +119,10 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
               onClick={e => {
                 e.preventDefault();
                 mutFormIsOpen(false);
-                onSubmit({password, email});
+                onSubmit({ password, email });
               }}
               color="primary"
-              disabled={!( emailIsValid && passwordIsValid && password === confirmPassword)}
+              disabled={!(emailIsValid && passwordIsValid && password === confirmPassword)}
             >
               Sign Up
             </Button>
@@ -140,17 +135,17 @@ const SignUpForm = withStyles(styles) (({ classes, onSubmit }: SignUpPropTypes) 
 
 const SignUpMutation = () => (
   <Mutation mutation={createUser}>
-  {(mutateFn, { data }) => {
-    if(data) {
-      const userInfo = {
-        id: data.createUser.id,
-        username: data.createUser.username,
-        email: data.createUser.email
+    {(mutateFn, { data }) => {
+      if (data) {
+        const userInfo = {
+          id: data.createUser.id,
+          username: data.createUser.username,
+          email: data.createUser.email
+        }
+        setUser(userInfo);
       }
-      setUser(userInfo);
-    }
-    return <SignUpForm onSubmit={evt => mutateFn({variables: { userInput: evt }})}/>;
-  }}
+      return <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
+    }}
   </Mutation>
 );
 

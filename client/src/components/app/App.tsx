@@ -94,56 +94,56 @@ interface AppPropTypes extends WithStyles<typeof styles> { }
 const App = ({ classes }: AppPropTypes) => (
   <ApolloProvider client={client}>
     <Router>
-      <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-        <div className="App">
-          <div className={classes.layout}>
-            <Toolbar className={classes.toolbarMain}>
-              <Button component={homeLink} size="small"><HomeIcon /></Button>
-              <Button component={newPostLink} size="small"><AddIcon /></Button>
-              <Button size="small"><SettingsIcon /></Button>
-              <Typography
-                component="h1"
-                variant="headline"
-                color="inherit"
-                align="center"
-                noWrap
-                className={classes.toolbarTitle}
-              >
-                Downtime
-              </Typography>
-              { userIsLoggedIn() &&
-                <Typography variant="subtitle2">{getUser()!.username}</Typography>
-              }
-              <IconButton>
-                <SearchIcon />
-              </IconButton>
-              <SignUp />
-            </Toolbar>
-            <Toolbar variant="dense" className={classes.toolbarSecondary}>
-              <Typography color="inherit">
-                Stuff
-              </Typography>
-              <Typography color="inherit">
-                Other Stuff
-              </Typography>
-              <Typography color="inherit">
-                Neat Stuff
-              </Typography>
-              <Typography color="inherit">
-                Buzzy Stuff
-              </Typography>
-              <Typography color="inherit">
-                Snuzzy Fluff
-              </Typography>
-            </Toolbar>
-            <main>
-              <Route exact path="/" component={Posts} />
-              <Route path="/post" component={NewPost} />
-            </main>
+        <MuiThemeProvider theme={theme}>
+          <CssBaseline />
+          <div className="App">
+            <div className={classes.layout}>
+              <Toolbar className={classes.toolbarMain}>
+                <Button component={homeLink} size="small"><HomeIcon /></Button>
+                <Button component={newPostLink} size="small"><AddIcon /></Button>
+                <Button size="small"><SettingsIcon /></Button>
+                <Typography
+                  component="h1"
+                  variant="headline"
+                  color="inherit"
+                  align="center"
+                  noWrap
+                  className={classes.toolbarTitle}
+                >
+                  Downtime
+                </Typography>
+                { userIsLoggedIn() &&
+                  <Typography variant="subtitle2">{getUser()!.username}</Typography>
+                }
+                <IconButton>
+                  <SearchIcon />
+                </IconButton>
+                <SignUp />
+              </Toolbar>
+              <Toolbar variant="dense" className={classes.toolbarSecondary}>
+                <Typography color="inherit">
+                  Stuff
+                </Typography>
+                <Typography color="inherit">
+                  Other Stuff
+                </Typography>
+                <Typography color="inherit">
+                  Neat Stuff
+                </Typography>
+                <Typography color="inherit">
+                  Buzzy Stuff
+                </Typography>
+                <Typography color="inherit">
+                  Snuzzy Fluff
+                </Typography>
+              </Toolbar>
+              <main>
+                <Route exact path="/" component={Posts} />
+                <Route path="/post" component={NewPost} />
+              </main>
+            </div>
           </div>
-        </div>
-      </MuiThemeProvider>
+        </MuiThemeProvider>
     </Router>
   </ApolloProvider>
 );
