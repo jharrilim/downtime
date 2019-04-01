@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment';
 export const traceOrDate = (date: Date) => {
 
     return function (thresholdHours: number = 24) {
-        if (date.getHours() > thresholdHours)
+        if (moment().hours() - date.getHours() > thresholdHours)
             return moment(date).format('MMMM Do YYYY, h:mm:ss a');
         
         const now = moment();
