@@ -3,8 +3,8 @@ import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, D
 import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
 import { createUser } from '../../data/mutations/create-user';
-import { setUser, userIsLoggedIn, unsetUser } from '../../data/storage/user-storage';
 import { SignUpButton } from './SignUpButton';
+import { useLocalStorage, writeStorage, deleteFromStorage } from '@rehooks/local-storage';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -36,6 +36,7 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
   const [confirmPassword, mutConfirmPassword] = useState('');
   const [passwordIsValid, mutPasswordIsValid] = useState(false);
   const [emailIsValid, mutEmailIsValid] = useState(false);
+  const [user, mutUser] = useLocalStorage('user');
 
   const passwordChanged = (password: string) => {
     mutPassword(password);
@@ -63,9 +64,9 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
   return (
     <>
       <SignUpButton
-        isLoggedIn={userIsLoggedIn()}
+        isLoggedIn={!!user}
         onSignUpClick={_ => mutFormIsOpen(true)}
-        onSignOutClick={_ => unsetUser()}
+        onSignOutClick={_ => deleteFromStorage('user')}
       />
       <Dialog
         open={formIsOpen}
@@ -142,7 +143,7 @@ const SignUpMutation = () => (
           username: data.createUser.username,
           email: data.createUser.email
         }
-        setUser(userInfo);
+        writeStorage('user', JSON.stringify(userInfo));
       }
       return <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
     }}

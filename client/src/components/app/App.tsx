@@ -13,7 +13,8 @@ import HomeIcon from '@material-ui/icons/Home';
 import { NewPost } from '../posts/NewPostForm';
 import { SignUp } from '../sign-up/SignUp';
 import { grey } from '@material-ui/core/colors';
-import { getUser, userIsLoggedIn } from '../../data/storage/user-storage';
+import { useLocalStorage } from '@rehooks/local-storage';
+import { User } from '../../data/models/User.model';
 
 const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
@@ -91,9 +92,12 @@ const styles = (theme: Theme) => createStyles({
 
 interface AppPropTypes extends WithStyles<typeof styles> { }
 
-const App = ({ classes }: AppPropTypes) => (
-  <ApolloProvider client={client}>
-    <Router>
+const App = ({ classes }: AppPropTypes) => {
+  const [userString] = useLocalStorage('user');
+  const user = userString ? JSON.parse(userString as string) as User : null;
+  return (
+    <ApolloProvider client={client}>
+      <Router>
         <MuiThemeProvider theme={theme}>
           <CssBaseline />
           <div className="App">
@@ -112,8 +116,8 @@ const App = ({ classes }: AppPropTypes) => (
                 >
                   Downtime
                 </Typography>
-                { userIsLoggedIn() &&
-                  <Typography variant="subtitle2">{getUser()!.username}</Typography>
+                {user &&
+                  <Typography variant="subtitle2">{user.username}</Typography>
                 }
                 <IconButton>
                   <SearchIcon />
@@ -144,7 +148,8 @@ const App = ({ classes }: AppPropTypes) => (
             </div>
           </div>
         </MuiThemeProvider>
-    </Router>
-  </ApolloProvider>
-);
+      </Router>
+    </ApolloProvider>
+  )
+};
 export default withStyles(styles(theme))(App);

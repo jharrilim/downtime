@@ -1,4 +1,4 @@
-import { userIsLoggedIn } from "../../data/storage/user-storage";
+import React from 'react';
 import { Button } from "@material-ui/core";
 
 interface SignUpButtonPropTypes {
@@ -10,7 +10,7 @@ interface SignUpButtonPropTypes {
 export const SignUpButton = ({ isLoggedIn, onSignUpClick, onSignOutClick }: SignUpButtonPropTypes) => {
   return (
     <>
-      {isLoggedIn ?
+      {!isLoggedIn ?
         <Button variant="outlined" color="primary" onClick={ev => onSignUpClick(ev)}>
           Sign Up
         </Button>
