@@ -11,11 +11,11 @@ export const SignUpButton = ({ isLoggedIn, onSignUpClick, onSignOutClick }: Sign
   return (
     <>
       {!isLoggedIn ?
-        <Button variant="outlined" color="primary" onClick={ev => onSignUpClick(ev)}>
-          Sign Up
+        <Button onClick={ev => onSignUpClick(ev)}>
+          Register
         </Button>
         :
-        <Button variant="outlined" color="secondary" onClick={ev => onSignOutClick(ev)}>
+        <Button color="secondary" onClick={ev => onSignOutClick(ev)}>
           Sign Out
         </Button>
       }

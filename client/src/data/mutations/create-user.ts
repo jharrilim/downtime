@@ -8,7 +8,7 @@ mutation createUser($userInput: UserInput!) {
 }
 `;
 
-export interface CreateUser {
+export interface CreateUserInput {
   id: string;
   username: string;
   email: string;

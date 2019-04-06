@@ -15,6 +15,7 @@ import { SignUp } from '../sign-up/SignUp';
 import { grey } from '@material-ui/core/colors';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { User } from '../../data/models/User.model';
+import { SignIn } from '../sign-in/SignIn';
 
 const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
@@ -69,6 +70,9 @@ const styles = (theme: Theme) => createStyles({
   },
   cardDetails: {
     flex: 1,
+    [theme.breakpoints.down('sm')]: {
+      display: 'none'
+    }
   },
   cardMedia: {
     width: 160,
@@ -123,6 +127,7 @@ const App = ({ classes }: AppPropTypes) => {
                   <SearchIcon />
                 </IconButton>
                 <SignUp />
+                <SignIn />
               </Toolbar>
               <Toolbar variant="dense" className={classes.toolbarSecondary}>
                 <Typography color="inherit">
