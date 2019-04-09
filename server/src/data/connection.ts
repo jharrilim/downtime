@@ -44,7 +44,7 @@ export async function connect(): Promise<Connection> {
 export async function seed() {
     // Init Roles
     const roleRepository = getRepository(Role);
-    const defaultRoles = roleRepository.create([{ name: 'user' }, { name: 'admin' }]);
+    const defaultRoles = roleRepository.create([{ name: 'general' }, { name: 'admin' }]);
     await roleRepository.save(defaultRoles);
 
     // Init Default User
@@ -55,7 +55,7 @@ export async function seed() {
         username: process.env.DB_USER || 'foo@mail.com',
         passwordHash,
         salt,
-        roles: [ defaultRoles.find(r => r.name === 'admin')! ]
+        roles: defaultRoles
     });
     await userRepository.save(defaultUser);
     return { defaultUser };

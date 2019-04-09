@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Int, Ctx, FieldResolver, Root } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Int, Ctx, FieldResolver, Root, Authorized } from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
 import { Context } from "../resolvers/types/context";
@@ -24,6 +24,7 @@ export class PostResolver {
     }
 
     @Mutation(returns => Post)
+    @Authorized(['general'])
     async createPost(@Ctx() { user }: Context, @Arg('postInput') input: PostInput): Promise<Post> {
         console.log(user);
         const post = this.postRepository.create({
