@@ -2,9 +2,10 @@ import { createConnection, Connection, getRepository } from 'typeorm';
 import entities from './entities';
 import { User } from './entities/user';
 import { encryptPassword } from '../security';
+import { Role } from './entities/role';
 
 export async function connect(): Promise<Connection> {
-    
+
     if (process.env.DB_TYPE === 'mongodb') {
         return await createConnection({
             type: 'mongodb',
@@ -19,7 +20,7 @@ export async function connect(): Promise<Connection> {
             logging: 'all',
             dropSchema: true,
             cache: true,
-    
+
         });
     }
 
@@ -29,25 +30,32 @@ export async function connect(): Promise<Connection> {
         username: process.env.DB_USER || 'admin',
         password: process.env.DB_PASSWORD || 'postgres',
         port: +(process.env.DB_PORT || 5432),
-        host: 'db',
+        host: process.env.DB_HOSE || 'localhost',
         entities: entities,
         synchronize: true,
         logger: 'advanced-console',
         logging: 'all',
         dropSchema: process.env.NODE_ENV !== 'production',
         cache: true,
-        
+
     });
 }
 
 export async function seed() {
+    // Init Roles
+    const roleRepository = getRepository(Role);
+    const defaultRoles = roleRepository.create([{ name: 'user' }, { name: 'admin' }]);
+    await roleRepository.save(defaultRoles);
+
+    // Init Default User
     const userRepository = getRepository(User);
     const { passwordHash, salt } = encryptPassword(process.env.DB_PASSWORD || 'foobar');
     const defaultUser = userRepository.create({
         email: process.env.DEFAULT_MAIL_ADDRESS || 'foo@mail.com',
         username: process.env.DB_USER || 'foo@mail.com',
         passwordHash,
-        salt
+        salt,
+        roles: [ defaultRoles.find(r => r.name === 'admin')! ]
     });
     await userRepository.save(defaultUser);
     return { defaultUser };

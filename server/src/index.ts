@@ -9,7 +9,7 @@ import { Context } from './data/resolvers/types/context';
 
 async function bootstrap(): Promise<ServerInfo> {
     dotenv.config();
-    const port = +(process.env.PORT || 4000);
+    const port = +(process.env.PORT || 8080);
     useContainer(Container);
     await connect();
     const schema = await buildSchema({
@@ -18,7 +18,11 @@ async function bootstrap(): Promise<ServerInfo> {
     });
     const { defaultUser } = await seed();
     const context = { user: defaultUser } as Context;
-    const server = new ApolloServer({ schema, context });
+    const server = new ApolloServer({ schema, context: ({ req }) => {
+        const token = req.headers.authorization || '';
+        
+        return context;
+    }});
 
     return await server.listen(port);
 }
