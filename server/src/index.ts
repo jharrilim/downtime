@@ -3,23 +3,11 @@ import * as dotenv from 'dotenv';
 import { ApolloServer, ServerInfo } from 'apollo-server';
 import { Container } from 'typedi';
 import { useContainer, getRepository } from'typeorm';
-import { buildSchema, AuthChecker } from "type-graphql";
+import { buildSchema } from "type-graphql";
 import { connect, seed } from './data/connection';
 import { Context } from './data/resolvers/types/context';
-import { verify } from 'jsonwebtoken';
-import { readFile } from 'fs';
 import { User } from './data/entities/user';
-import { promisify } from 'util';
-
-const rf = promisify(readFile);
-
-const authChecker: AuthChecker<Context> = ({ context: { user } }, roles) => {
-    if (roles.length === 0) // if `@Authorized()`, check only is user exist
-      return user !== undefined;
-    if (!user) // and if no user, restrict access
-      return false;
-    return user.roles.some(role => roles.includes(role.name));
-};
+import { parseUserFromToken, authChecker } from './security';
 
 async function bootstrap(): Promise<ServerInfo> {
     dotenv.config();
@@ -39,8 +27,7 @@ async function bootstrap(): Promise<ServerInfo> {
         const token = req.headers.authorization;
         if(token !== undefined) {
             const userRepository = getRepository(User);
-            const privateKey = await rf(process.env.PRIVATE_KEY || `${__dirname}/../key.pem`);
-            const userFromToken = verify(token, privateKey, { algorithms: [ 'RS256' ] }) as User;
+            const userFromToken = await parseUserFromToken(token);
             const user = await userRepository.findOne({ where: {
                 id: userFromToken.id,
                 email: userFromToken.email,

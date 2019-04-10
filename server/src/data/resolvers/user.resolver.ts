@@ -25,13 +25,13 @@ export class UserResolver {
     }
 
     @Mutation(returns => User)
-    async createUser(@Arg('userInput') userInput: UserInput): Promise<User> {
-        const { salt, passwordHash } = encryptPassword(userInput.password);
+    async createUser(@Arg('userInput') { email, password, username }: UserInput): Promise<User> {
+        const { salt, passwordHash } = encryptPassword(password);
         const user = await this.userRepository.create({
-            email: userInput.email,
+            email,
             passwordHash,
             salt,
-            username: userInput.username || userInput.email
+            username: username || email
         });
         return await this.userRepository.save(user);
     }
