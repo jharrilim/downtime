@@ -18,18 +18,22 @@ export class AuthResolver {
         @Arg('loginWithPasswordInput')
         { usernameOrEmail, password }: LoginWithPasswordInput
     ): Promise<String> {
-        const { salt, passwordHash } = encryptPassword(password);
         const user = await this.userRepository.findOne({
             where: [
-                { username: usernameOrEmail, passwordHash, salt },
-                { email: usernameOrEmail, passwordHash, salt }
+                { username: usernameOrEmail },
+                { email: usernameOrEmail }
             ]
         });
 
         if (!user)
             throw new Error('User not found: ' + usernameOrEmail);
 
-        const token = await tokenifyUser(user);
-        return token;
+        const { passwordHash } = encryptPassword(password, user.salt);
+        if(passwordHash === user.passwordHash) {
+            const token = await tokenifyUser(user);
+            return token;
+        }
+
+        throw new Error('Invalid Credentials for user: ' + usernameOrEmail);
     }
 }
