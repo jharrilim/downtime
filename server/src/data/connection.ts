@@ -30,7 +30,7 @@ export async function connect(): Promise<Connection> {
         username: process.env.DB_USER || 'admin',
         password: process.env.DB_PASSWORD || 'postgres',
         port: +(process.env.DB_PORT || 5432),
-        host: process.env.DB_HOSE || 'localhost',
+        host: process.env.DB_HOST || 'localhost',
         entities: entities,
         synchronize: true,
         logger: 'advanced-console',
