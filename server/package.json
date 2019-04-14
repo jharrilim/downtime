@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "ts-node ./src/index.ts",
     "debug": "node --inspect=5858 -r ts-node/register ./src/index.ts",
-    "test": "npm test",
+    "test": "jest",
     "watch": "nodemon"
   },
   "keywords": [
@@ -31,9 +31,16 @@
   "devDependencies": {
     "@types/dotenv": "^6.1.0",
     "@types/graphql": "^14.0.7",
+    "@types/jest": "^24.0.11",
     "@types/jsonwebtoken": "^8.3.2",
+    "@types/nock": "^9.3.1",
     "@types/node": "^11.11.6",
+    "apollo-server-testing": "^2.4.8",
+    "jest": "^24.7.1",
+    "nock": "^10.0.6",
     "nodemon": "^1.18.10",
+    "testdouble": "^3.11.0",
+    "ts-jest": "^24.0.2",
     "ts-node": "^8.0.3",
     "typescript": "^3.3.3333"
   }

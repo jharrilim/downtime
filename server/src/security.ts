@@ -5,7 +5,6 @@ import { readFile } from 'fs';
 import { User } from "./data/entities/user";
 import { ResolverData } from "type-graphql";
 import { Context } from "./data/resolvers/types/context";
-import { Role } from "./data/entities/role";
 
 const rf = promisify(readFile);
 
@@ -30,7 +29,11 @@ export async function tokenifyUser(user: User): Promise<string> {
     return sign(user, privateKey, { algorithm: 'RS256' });
 }
 
-export function authChecker({ context: { user } }: ResolverData<Context>, roles: string[]) {
+export function authChecker(resolverData: Partial<ResolverData<Context>>, roles: string[]) {
+    if (!resolverData.context) {
+        return false;
+    }
+    const user = resolverData.context.user;
     if (roles.length === 0) // if `@Authorized()`, check only is user exist
         return user !== undefined;
     if (!user) // and if no user, restrict access
