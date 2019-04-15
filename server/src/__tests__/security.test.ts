@@ -8,8 +8,6 @@ import {
 import { User } from '../data/entities/user';
 import { Role } from '../data/entities/role';
 
-import td from 'testdouble';
-
 describe('Security', () => {
     describe('authChecker', () => {
         it('returns true when given a user with valid roles', () => {
