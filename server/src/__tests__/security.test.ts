@@ -4,9 +4,11 @@ import {
     generateSalt,
     parseUserFromToken,
     tokenifyUser
-} from './security';
-import { User } from './data/entities/user';
-import { Role } from './data/entities/role';
+} from '../security';
+import { User } from '../data/entities/user';
+import { Role } from '../data/entities/role';
+
+import td from 'testdouble';
 
 describe('Security', () => {
     describe('authChecker', () => {
@@ -61,7 +63,7 @@ describe('Security', () => {
                 roles: []
             };
 
-            const result = authChecker({ context: { user }}, roles);
+            const result = authChecker({ context: { user } }, roles);
 
             expect(result).toBe(false);
         });
@@ -80,7 +82,7 @@ describe('Security', () => {
                 ]
             };
 
-            const result = authChecker({ context: { user }}, []);
+            const result = authChecker({ context: { user } }, []);
 
             expect(result).toBe(true);
         });
@@ -94,7 +96,7 @@ describe('Security', () => {
         });
 
         it('returns false when not given a user or roles', () => {
-            const result = authChecker({ context: { user: undefined }}, []);
+            const result = authChecker({ context: { user: undefined } }, []);
 
             expect(result).toBe(false);
         });
@@ -103,7 +105,40 @@ describe('Security', () => {
     describe('generateSalt', () => {
         it('returns a string of 32 characters', () => {
             const salt = generateSalt();
+            expect(typeof salt).toEqual('string');
             expect(salt.length).toEqual(32);
-        })
+        });
     });
+
+    describe('tokenifyUser', () => {
+        beforeAll(async () => {
+            process.env.PRIVATE_KEY = `${__dirname}/fixtures/fakekey.pem`;
+        });
+        afterAll(() => {
+            delete process.env.PRIVATE_KEY;
+        });
+
+        it('returns a promise with a tokenified user', async () => {
+            const user: User = {
+                id: 1234,
+                posts: [],
+                email: 'foo@mail.com',
+                username: 'fooey',
+                passwordHash: 'asdasd',
+                salt: '128192371289',
+                roles: [
+                    { id: 1, name: 'admin' } as Role,
+                    { id: 2, name: 'user' } as Role
+                ]
+            };
+
+            const result = await tokenifyUser(user);
+
+            expect(typeof result).toBe('string');
+        });
+    });
+
+    // describe('parseUserFromToken', () => {
+    //     it('')
+    // });
 })
