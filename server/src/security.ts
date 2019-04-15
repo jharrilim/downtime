@@ -8,6 +8,10 @@ import { Context } from "./data/resolvers/types/context";
 
 const rf = promisify(readFile);
 
+type WithIat = { iat: string };
+
+type JWTResult<T> = T & WithIat;
+
 export function generateSalt() {
     return randomBytes(16).toString('hex');
 }
@@ -19,9 +23,9 @@ export function encryptPassword(password: string, salt: string = generateSalt())
     return { salt, passwordHash };
 }
 
-export async function parseUserFromToken(token: string): Promise<User> {
+export async function parseUserFromToken(token: string): Promise<JWTResult<User>> {
     const privateKey = await rf(process.env.PRIVATE_KEY || `${__dirname}/../key.pem`);
-    return verify(token, privateKey, { algorithms: ['RS256'] }) as User;
+    return verify(token, privateKey, { algorithms: ['RS256'] }) as JWTResult<User>;
 }
 
 export async function tokenifyUser(user: User): Promise<string> {

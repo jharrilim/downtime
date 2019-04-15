@@ -138,7 +138,33 @@ describe('Security', () => {
         });
     });
 
-    // describe('parseUserFromToken', () => {
-    //     it('')
-    // });
+    describe('parseUserFromToken', () => {
+        beforeAll(async () => {
+            process.env.PRIVATE_KEY = `${__dirname}/fixtures/fakekey.pem`;
+        });
+        afterAll(() => {
+            delete process.env.PRIVATE_KEY;
+        });
+
+        it('returns the correct user', async () => {
+            const user: User = {
+                id: 1234,
+                posts: [],
+                email: 'foo@mail.com',
+                username: 'fooey',
+                passwordHash: 'asdasd',
+                salt: '128192371289',
+                roles: [
+                    { id: 1, name: 'admin' } as Role,
+                    { id: 2, name: 'user' } as Role
+                ]
+            };
+
+            const userToken = await tokenifyUser(user);
+            const parsedUser = await parseUserFromToken(userToken);
+            expect(parsedUser.iat).toBeDefined();
+            delete parsedUser.iat;
+            expect(parsedUser as User).toEqual(user);
+        });
+    });
 })
