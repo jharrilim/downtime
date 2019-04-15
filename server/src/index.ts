@@ -20,6 +20,7 @@ async function bootstrap(): Promise<ServerInfo> {
         authChecker
     });
     const { defaultUser } = await seed();
+
     const server = new ApolloServer({ schema, context: async ({ req }): Promise<Context | null> => {
         if (process.env.NODE_ENV !== 'production') {
             return { user: defaultUser } as Context;

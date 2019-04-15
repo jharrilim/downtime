@@ -5,6 +5,7 @@ import { Context } from "../resolvers/types/context";
 import { PostInput } from "../resolvers/types/post-input";
 import { Service } from "typedi";
 import { Post } from "../entities/post";
+import { Roles } from "../roles";
 
 @Service()
 @Resolver(Post)
@@ -24,7 +25,7 @@ export class PostResolver {
     }
 
     @Mutation(returns => Post)
-    @Authorized(['general'])
+    @Authorized([Roles.General])
     async createPost(@Ctx() { user }: Context, @Arg('postInput') input: PostInput): Promise<Post> {
         console.log(user);
         const post = this.postRepository.create({

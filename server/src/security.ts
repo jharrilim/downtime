@@ -44,5 +44,3 @@ export function authChecker(resolverData: Partial<ResolverData<Context>>, roles:
         return false;
     return user.roles.some(role => roles.includes(role.name));
 }
-
-
