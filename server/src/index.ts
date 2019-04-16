@@ -27,12 +27,8 @@ async function initialize() {
     return { schema, defaultUser };
 }
 
-async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<ServerInfo> {
-    const port = +(process.env.PORT || 8080);
-    useContainer(Container);
-    await connect();
-
-    const server = new ApolloServer({
+async function createServer(schema: GraphQLSchema, defaultUser: User) {
+    return new ApolloServer({
         schema, context: async ({ req }): Promise<Context | null> => {
             if (process.env.NODE_ENV !== 'production') {
                 return { user: defaultUser } as Context;
@@ -53,7 +49,13 @@ async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<Serv
             return null;
         },
     });
+}
 
+async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<ServerInfo> {
+    const port = +(process.env.PORT || 8080);
+    useContainer(Container);
+    await connect();
+    const server = await createServer(schema, defaultUser);
     return await server.listen(port);
 }
 

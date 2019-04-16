@@ -1,8 +1,9 @@
-import { ObjectType, Field, ID } from "type-graphql";
+import { ObjectType, Field, ID, Authorized } from "type-graphql";
 import { Post } from "./post";
 import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToMany, JoinTable } from "typeorm";
 import { Lazy } from ".";
 import { Role } from "./role";
+import { Roles } from "../roles";
 
 @Entity()
 @ObjectType()
@@ -19,9 +20,11 @@ export class User {
     @Column()
     email!: string;
 
+    @Authorized([Roles.Admin])
     @Column()
     passwordHash!: string;
 
+    @Authorized([Roles.Admin])
     @Column()
     salt!: string;
 

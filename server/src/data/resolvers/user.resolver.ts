@@ -16,6 +16,7 @@ export class UserResolver {
         @InjectRepository(User) private readonly userRepository: Repository<User>
     ) { }
 
+    @Authorized([Roles.General])
     @Query(returns => User)
     async self(@Ctx() { user }: Context): Promise<User> {
         if (!user) {
