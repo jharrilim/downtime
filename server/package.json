@@ -26,7 +26,8 @@
     "type-graphql": "^0.17.0",
     "typedi": "^0.8.0",
     "typeorm": "^0.2.15",
-    "typeorm-typedi-extensions": "^0.2.3"
+    "typeorm-typedi-extensions": "^0.2.3",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.0",

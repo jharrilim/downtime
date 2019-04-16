@@ -11,9 +11,10 @@ import { parseUserFromToken, authChecker } from './security';
 import { isMaster, fork, on as clusterOn } from 'cluster';
 import { cpus } from 'os';
 import { GraphQLSchema } from 'graphql';
+import { logger } from './logging';
 
 dotenv.config();
-console.log('Starting...');
+logger.info('Starting...');
 
 async function initialize() {
     const schema = await buildSchema({
@@ -58,6 +59,7 @@ async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<Serv
 
 async function runMaster() {
     if (process.env.NODE_ENV !== 'production') {
+        logger.debug('Dropping Schema...');
         let conn: Connection | null = null;
         try {
             conn = await connect(true);
@@ -67,14 +69,14 @@ async function runMaster() {
         }
     }
     const workerCount = cpus().length;
-    console.log(`Creating ${workerCount} workers.`);
+    logger.info(`Creating ${workerCount} workers.`);
 
     for (let i = 0; i < workerCount; i++) {
         fork();
     }
 
     clusterOn('exit', worker => {
-        console.warn(`[${process.pid}] ${worker.id} died.`);
+        logger.warn(`[${process.pid}] ${worker.id} died.`);
         fork();
     });
 }
@@ -85,8 +87,8 @@ async function runWorker() {
         conn = await connect();
         const { defaultUser, schema } = await initialize();
         bootstrap(schema, defaultUser)
-            .then(({ url }) => console.log(`🚀 [${process.pid}] Server ready at ${url}`))
-            .catch(reason => console.error(reason));
+            .then(({ url }) => logger.info(`🚀 [${process.pid}] Server ready at ${url}`))
+            .catch(reason => logger.error(reason));
     } finally {
         if (conn)
             await conn.close();
