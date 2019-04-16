@@ -16,9 +16,11 @@ import { grey } from '@material-ui/core/colors';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { User } from '../../data/models/User.model';
 import { SignIn } from '../sign-in/SignIn';
+import { Settings } from '../settings/Settings';
 
 const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
+const settingsLink = (props: any) => <Link {...props} to="/settings" style={{ textDecoration: "none" }} />;
 
 const client = new ApolloClient({
   uri: process.env.NOW_URL ? process.env.NOW_URL + '/api' :
@@ -109,7 +111,7 @@ const App = ({ classes }: AppPropTypes) => {
               <Toolbar className={classes.toolbarMain}>
                 <Button component={homeLink} size="small"><HomeIcon /></Button>
                 <Button component={newPostLink} size="small"><AddIcon /></Button>
-                <Button size="small"><SettingsIcon /></Button>
+                <Button component={settingsLink} size="small"><SettingsIcon /></Button>
                 <Typography
                   component="h1"
                   variant="headline"
@@ -149,6 +151,7 @@ const App = ({ classes }: AppPropTypes) => {
               <main>
                 <Route exact path="/" component={Posts} />
                 <Route path="/post" component={NewPost} />
+                <Route path="/settings" component={Settings} />
               </main>
             </div>
           </div>
