@@ -2,7 +2,7 @@ import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-boost';
 import { withStyles, CssBaseline, WithStyles, Toolbar, Button, Typography } from '@material-ui/core';
-import { MuiThemeProvider, createMuiTheme, Theme, createStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
@@ -12,11 +12,12 @@ import { Posts } from '../posts/Posts';
 import HomeIcon from '@material-ui/icons/Home';
 import { NewPost } from '../posts/NewPostForm';
 import { SignUp } from '../sign-up/SignUp';
-import { grey } from '@material-ui/core/colors';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { User } from '../../data/models/User.model';
 import { SignIn } from '../sign-in/SignIn';
 import { Settings } from '../settings/Settings';
+import { Categories } from './Categories';
+import { appStyles, appTheme } from './App.styles';
 
 const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
@@ -27,84 +28,17 @@ const client = new ApolloClient({
     process.env.SERVER_URL || `http://${location.hostname}:8080`
 });
 
-const theme = createMuiTheme({
-  palette: {
-    primary: grey
-  }
-});
+const mockCategories = ['foo', 'bar', 'baz', 'qux', 'qwop'];
 
-const styles = (theme: Theme) => createStyles({
-  layout: {
-    width: 'auto',
-    marginLeft: theme.spacing.unit * 3,
-    marginRight: theme.spacing.unit * 3,
-    [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
-      width: 1100,
-      marginLeft: 'auto',
-      marginRight: 'auto',
-    },
-  },
-  toolbarMain: {
-    borderBottom: `1px solid ${theme.palette.grey[300]}`,
-  },
-  toolbarTitle: {
-    flex: 1,
-  },
-  toolbarSecondary: {
-    justifyContent: 'space-between',
-  },
-  mainFeaturedPost: {
-    backgroundColor: theme.palette.grey[800],
-    color: theme.palette.common.white,
-    marginBottom: theme.spacing.unit * 4,
-  },
-  mainFeaturedPostContent: {
-    padding: `${theme.spacing.unit * 6}px`,
-    [theme.breakpoints.up('md')]: {
-      paddingRight: 0,
-    },
-  },
-  mainGrid: {
-    marginTop: theme.spacing.unit * 3,
-  },
-  card: {
-    display: 'flex',
-  },
-  cardDetails: {
-    flex: 1,
-    [theme.breakpoints.down('sm')]: {
-      display: 'none'
-    }
-  },
-  cardMedia: {
-    width: 160,
-  },
-  markdown: {
-    padding: `${theme.spacing.unit * 3}px 0`,
-  },
-  sidebarAboutBox: {
-    padding: theme.spacing.unit * 2,
-    backgroundColor: theme.palette.grey[200],
-  },
-  sidebarSection: {
-    marginTop: theme.spacing.unit * 3,
-  },
-  footer: {
-    backgroundColor: theme.palette.background.paper,
-    marginTop: theme.spacing.unit * 8,
-    padding: `${theme.spacing.unit * 6}px 0`,
-  },
-});
+interface AppPropTypes extends WithStyles<typeof appStyles> { }
 
-interface AppPropTypes extends WithStyles<typeof styles> { }
-
-const App = ({ classes }: AppPropTypes) => {
+const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
   const [userString] = useLocalStorage('user');
   const user = userString ? JSON.parse(userString as string) as User : null;
   return (
     <ApolloProvider client={client}>
       <Router>
-        <MuiThemeProvider theme={theme}>
+        <MuiThemeProvider theme={appTheme}>
           <CssBaseline />
           <div className="App">
             <div className={classes.layout}>
@@ -131,23 +65,7 @@ const App = ({ classes }: AppPropTypes) => {
                 <SignUp />
                 <SignIn />
               </Toolbar>
-              <Toolbar variant="dense" className={classes.toolbarSecondary}>
-                <Typography color="inherit">
-                  Stuff
-                </Typography>
-                <Typography color="inherit">
-                  Other Stuff
-                </Typography>
-                <Typography color="inherit">
-                  Neat Stuff
-                </Typography>
-                <Typography color="inherit">
-                  Buzzy Stuff
-                </Typography>
-                <Typography color="inherit">
-                  Snuzzy Fluff
-                </Typography>
-              </Toolbar>
+              <Categories categories={mockCategories} />
               <main>
                 <Route exact path="/" component={Posts} />
                 <Route path="/post" component={NewPost} />
@@ -159,5 +77,6 @@ const App = ({ classes }: AppPropTypes) => {
       </Router>
     </ApolloProvider>
   )
-};
-export default withStyles(styles(theme))(App);
+});
+
+export default App;
