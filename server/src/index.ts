@@ -78,7 +78,7 @@ async function runMaster() {
     }
 
     clusterOn('exit', worker => {
-        logger.warn(`[${process.pid}] ${worker.id} died.`);
+        logger.warn(`${worker.id} died.`);
         fork();
     });
 }
@@ -88,9 +88,11 @@ async function runWorker() {
     try {
         conn = await connect();
         const { defaultUser, schema } = await initialize();
-        bootstrap(schema, defaultUser)
-            .then(({ url }) => logger.info(`🚀 [${process.pid}] Server ready at ${url}`))
-            .catch(reason => logger.error(reason));
+        const { url } = await bootstrap(schema, defaultUser);
+        logger.info(`🚀 Server ready at ${url}`);
+
+    } catch(reason) {
+        logger.error(reason);
     } finally {
         if (conn)
             await conn.close();
