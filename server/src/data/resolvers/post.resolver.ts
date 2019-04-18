@@ -6,6 +6,7 @@ import { PostInput } from "../resolvers/types/post-input";
 import { Service } from "typedi";
 import { Post } from "../entities/post";
 import { Roles } from "../roles";
+import { OrderInput } from "./types/order";
 
 @Service()
 @Resolver(Post)
@@ -22,6 +23,18 @@ export class PostResolver {
     @Query(returns => [Post])
     async posts(): Promise<Post[]> {
         return await this.postRepository.find();
+    }
+
+    @Query(returns => [Post])
+    async orderedPosts(@Arg('orderInput') input: OrderInput): Promise<Post[]> {
+        if (input.order !== 'DESC' || input.order !== 'ASC')
+            throw new Error('Order must be either DESC or ASC.');
+        const order = input.order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
+        return await this.postRepository.find({
+            order: {
+                dateCreated: order
+            }
+        });
     }
 
     @Mutation(returns => Post)
