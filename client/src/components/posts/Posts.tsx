@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Query, QueryResult } from 'react-apollo';
 import { Post } from './Post';
 import { traceOrDate } from '../../util/time';
@@ -12,7 +12,9 @@ interface Response {
   posts: PostModel[];
 }
 
-const queryResultHandler = ({ loading, error, data }: QueryResult<Response, OperationVariables>): JSX.Element => {
+const queryResultHandler = async (
+  { loading, error, data }: QueryResult<Response, OperationVariables>
+): Promise<JSX.Element> => {
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.error(error);
@@ -42,7 +44,7 @@ const queryResultHandler = ({ loading, error, data }: QueryResult<Response, Oper
 }
 
 const Posts = () => (
-  <Query<Response> query={postsQuery} >
+  <Query<Response> query={postsQuery} fetchPolicy="cache-and-network">
     {queryResultHandler}
   </Query>
 );
