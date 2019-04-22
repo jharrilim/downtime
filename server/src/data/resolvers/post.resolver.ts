@@ -27,7 +27,7 @@ export class PostResolver {
 
     @Query(returns => [Post])
     async orderedPosts(@Arg('orderInput') input: OrderInput): Promise<Post[]> {
-        if (input.order !== 'DESC' || input.order !== 'ASC')
+        if (['DESC', 'ASC'].includes(input.order.toUpperCase()))
             throw new Error('Order must be either DESC or ASC.');
         const order = input.order.toLowerCase() === 'desc' ? 'DESC' : 'ASC';
         return await this.postRepository.find({
