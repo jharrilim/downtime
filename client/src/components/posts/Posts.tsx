@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Query, QueryResult } from 'react-apollo';
 import { Post } from './Post';
 import { traceOrDate } from '../../util/time';
@@ -12,9 +12,9 @@ interface Response {
   posts: PostModel[];
 }
 
-const queryResultHandler = async (
+const queryResultHandler = (
   { loading, error, data }: QueryResult<Response, OperationVariables>
-): Promise<JSX.Element> => {
+): JSX.Element => {
   if (loading) return <p>Loading...</p>;
   if (error) {
     console.error(error);
@@ -30,7 +30,7 @@ const queryResultHandler = async (
   return (
     <Grid container spacing={24}>
       {data!.posts.sort((a, b) => -moment(a.dateCreated).diff(b.dateCreated)).map(({ content, author, dateCreated, title }) => (
-        <Grid item lg={6} sm={12}>
+        <Grid item lg={'auto'} sm={'auto'}>
           <Post
             key={`${author.username}-${title}`}
             content={content}
@@ -45,7 +45,7 @@ const queryResultHandler = async (
 
 const Posts = () => (
   <Query<Response> query={postsQuery} fetchPolicy="cache-and-network">
-    {queryResultHandler}
+    {queryResponse => queryResultHandler(queryResponse)}
   </Query>
 );
 
