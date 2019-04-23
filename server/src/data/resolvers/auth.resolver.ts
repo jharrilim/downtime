@@ -22,7 +22,9 @@ export class AuthResolver {
             where: [
                 { username: usernameOrEmail },
                 { email: usernameOrEmail }
-            ]
+            ],
+            select: ['id', 'email', 'passwordHash', 'username', 'salt', 'roles'],
+            // todo: don't select circular objects
         });
 
         if (!user)
