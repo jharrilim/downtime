@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid } from '@material-ui/core';
+import { Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid, FormHelperText, Modal } from '@material-ui/core';
 import { Mutation, FetchResult } from 'react-apollo';
 import { postsQuery } from '../../data/queries/posts';
 import { createPost, CreatePostReturnType } from '../../data/mutations/create-post';
 import { PostModel } from '../../data/models/Post.model';
+import useLocalStorage from '@rehooks/local-storage';
 
 const styles = (theme: Theme) => ({
   form: {
@@ -54,12 +55,18 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
     title: '',
     content: ''
   } as FormState);
+  const [user, mutUser] = useLocalStorage('user');
+  const submit = () => {
+    if (user)
+      onSubmit(postState);
+  };
 
   return (
     <Grid container justify="center">
       <Grid item xs={12}>
-        <form onSubmit={_ => onSubmit(postState)}>
+        <form onSubmit={_ => submit()}>
           <TextField id="titleInput"
+            disabled={!user}
             placeholder="Title"
             className={classes.title}
             fullWidth
@@ -77,8 +84,9 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
           />
           <br />
           <TextField
+            disabled={!user}
             id="contentInput"
-            placeholder="Write about something here..."
+            placeholder={!user ? "You must be logged in to post." : "Write about something here..."}
             multiline
             rows={15}
             className={classes.content}
@@ -88,7 +96,7 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
             })}
           />
           <br />
-          <Button type="submit" variant="contained" color="primary" className={classes.button}>
+          <Button type="submit" variant="contained" color="primary" disabled={!user} className={classes.button}>
             Post <Icon className={classes.rightIcon}>send</Icon>
           </Button>
         </form>
