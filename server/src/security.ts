@@ -13,10 +13,24 @@ type JWTResult<T> = {
     data: T
 };
 
-export function generateSalt() {
+/**
+ * Generates a random salt string.
+ *
+ * @export
+ * @returns {string} The salt string.
+ */
+export function generateSalt(): string {
     return randomBytes(16).toString('hex');
 }
 
+/**
+ * Encrypts a password using SHA512 as well as a salt.
+ * If a salt is not specified, one will be generated and returned.
+ * @export
+ * @param {string} password
+ * @param {string} [salt=generateSalt()]
+ * @returns {{ salt: string, passwordHash: string }} A salt and a hashed password.
+ */
 export function encryptPassword(password: string, salt: string = generateSalt()) {
     const hash = createHmac('sha512', salt);
     hash.update(password);
@@ -51,6 +65,14 @@ export async function tokenifyUser(user: User): Promise<string> {
     return sign(userToken, privateKey, { algorithm: 'RS256' });
 }
 
+/**
+ * Used for checking authorization in resolvers.
+ *
+ * @export
+ * @param {Partial<ResolverData<Context>>} resolverData
+ * @param {string[]} roles
+ * @returns {boolean} True if user is authorized, false if not.
+ */
 export function authChecker(resolverData: Partial<ResolverData<Context>>, roles: string[]) {
     if (!resolverData.context) {
         return false;

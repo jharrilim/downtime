@@ -39,9 +39,9 @@ async function createServer(schema: GraphQLSchema, defaultUser: User) {
                 const userFromToken = await parseUserFromToken(token);
                 const user = await userRepository.findOne({
                     where: {
-                        id: userFromToken.id,
-                        email: userFromToken.email,
-                        username: userFromToken.username
+                        id: userFromToken.data.id,
+                        email: userFromToken.data.email,
+                        username: userFromToken.data.username
                     }
                 });
                 return { user } as Context;
