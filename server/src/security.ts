@@ -8,9 +8,10 @@ import { Context } from "./data/resolvers/types/context";
 
 const rf = promisify(readFile);
 
-type WithIat = { iat: string };
-
-type JWTResult<T> = T & WithIat;
+type JWTResult<T> = {
+    iat: string,
+    data: T
+};
 
 export function generateSalt() {
     return randomBytes(16).toString('hex');
@@ -23,14 +24,31 @@ export function encryptPassword(password: string, salt: string = generateSalt())
     return { salt, passwordHash };
 }
 
+/**
+ * Parses a User from a JWT token. The resulting user also has an iat field attached to it.
+ *
+ * @export
+ * @param {string} token
+ * @returns {Promise<JWTResult<User>>}
+ */
 export async function parseUserFromToken(token: string): Promise<JWTResult<User>> {
     const privateKey = await rf(process.env.PRIVATE_KEY || `${__dirname}/../key.pem`);
     return verify(token, privateKey, { algorithms: ['RS256'] }) as JWTResult<User>;
 }
 
+/**
+ * Converts a user into a JWT token.
+ *
+ * @export
+ * @param {User} user
+ * @returns {Promise<string>}
+ */
 export async function tokenifyUser(user: User): Promise<string> {
     const privateKey = await rf(process.env.PRIVATE_KEY || `${__dirname}/../key.pem`);
-    return sign(user, privateKey, { algorithm: 'RS256' });
+    const userToken: Partial<JWTResult<User>> = {
+        data: user
+    };
+    return sign(userToken, privateKey, { algorithm: 'RS256' });
 }
 
 export function authChecker(resolverData: Partial<ResolverData<Context>>, roles: string[]) {

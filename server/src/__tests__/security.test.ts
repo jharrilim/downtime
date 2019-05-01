@@ -159,10 +159,9 @@ describe('Security', () => {
             };
 
             const userToken = await tokenifyUser(user);
-            const parsedUser = await parseUserFromToken(userToken);
-            expect(parsedUser.iat).toBeDefined();
-            delete parsedUser.iat;
-            expect(parsedUser as User).toEqual(user);
+            const parsedToken = await parseUserFromToken(userToken);
+            expect(parsedToken.iat).toBeDefined();
+            expect(parsedToken.data).toEqual(user);
         });
     });
 

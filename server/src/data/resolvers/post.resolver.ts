@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Arg, Int, Ctx, FieldResolver, Root, Authorized } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, Int, Ctx, Authorized } from "type-graphql";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
 import { Context } from "../resolvers/types/context";
