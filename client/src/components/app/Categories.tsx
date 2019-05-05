@@ -16,7 +16,7 @@ interface CategoriesPropTypes extends WithStyles<typeof styles> {
 const Categories = withStyles(styles)(({ classes, categories }: CategoriesPropTypes) => {
   return (
     <Toolbar className={classes.toolbarSecondary} variant="dense">
-      {categories.map(category => <Category name={category} />)}
+      {categories.map(category => <Category key={category} name={category} />)}
     </Toolbar>
   );
 });

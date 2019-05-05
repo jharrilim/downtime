@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useLocalStorage, writeStorage } from '@rehooks/local-storage';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions, FormLabel, Grid } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { signIn, SignInInput } from '../../data/mutations/sign-in';
 
 const styles = (theme: Theme) => ({
   email: {
-
+    width: '90%'
   },
   password: {
-    
+    width: '90%'
   }
 });
 
@@ -29,33 +29,46 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
 
   return (
     <>
-      <Button>Sign In</Button>
+      <Button
+        id="signInButton"
+        name="signInButton"
+        onClick={_ => {
+          mutFormIsOpen(true);
+        }
+      }>
+        Sign In
+      </Button>
       <Dialog
         open={formIsOpen}
         onClose={_ => dialogClosed()}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Sign Up to Downtime</DialogTitle>
+        <DialogTitle id="form-dialog-title">Sign In</DialogTitle>
         <form onSubmit={e => e.preventDefault()}>
           <DialogContent>
-            <DialogContentText>
-              To make posts on our website, you will need to sign up first.
-            </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="name"
-              label="Email Address"
-              type="email"
-              className={classes.email}
-            />
-            <TextField
-              margin="dense"
-              id="password"
-              label="Password"
-              type="password"
-              className={classes.password}
-            />
+            <Grid item xs={12} container>
+              <Grid item xs={12}>
+                <TextField
+                  autoFocus
+                  margin="normal"
+                  id="name"
+                  label="Email Address"
+                  type="email"
+                  className={classes.email}
+                  autoComplete="email"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  margin="dense"
+                  id="password"
+                  label="Password"
+                  type="password"
+                  className={classes.password}
+                  autoComplete="current-password"
+                />
+              </Grid>
+            </Grid>
           </DialogContent>
           <DialogActions>
             <Button onClick={_ => dialogClosed()} color="primary">
@@ -69,7 +82,7 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
               }}
               color="primary"
             >
-              Sign Up
+              Sign In
             </Button>
           </DialogActions>
         </form>

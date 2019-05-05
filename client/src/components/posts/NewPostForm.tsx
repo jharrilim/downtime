@@ -125,10 +125,10 @@ const NewPostFormMutation = (props: NewPostFormPropTypes) => (
     }}
   >
     {(mutateFn, { loading, error }) => {
-      if (loading) return <Typography variant="headline" >Loading...</Typography>;
+      if (loading) return <Typography variant="h5" >Loading...</Typography>;
       if (error) {
         console.error(error);
-        return <Typography variant="headline" >Error creating post. {error.message}</Typography>;
+        return <Typography variant="h5" >Error creating post. {error.message}</Typography>;
       }
       return <NewPostForm onSubmit={(evt) => mutateFn({ variables: { postInput: evt } })} classes={props.classes} />;
     }}

@@ -2,6 +2,9 @@ import { Theme, createStyles, createMuiTheme } from "@material-ui/core";
 import { grey } from "@material-ui/core/colors";
 
 export const appTheme = createMuiTheme({
+    typography: {
+        useNextVariants: true
+    },
     palette: {
         primary: grey
     }

@@ -87,6 +87,7 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
               type="email"
               className={classes.email}
               onChange={evt => emailChanged(evt.target.value)}
+              autoComplete="email"
             />
             <ValidationIcon isValid={emailIsValid} />
             <TextField
@@ -96,6 +97,7 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
               type="password"
               className={classes.password}
               onChange={evt => passwordChanged(evt.target.value)}
+              autoComplete="new-password"
             />
             <ValidationIcon isValid={passwordIsValid} />
             <FormHelperText id="password-helper-text">
@@ -109,6 +111,7 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
               type="password"
               className={classes.confirmPassword}
               onChange={evt => mutConfirmPassword(evt.target.value)}
+              autoComplete="new-password"
             />
             <ValidationIcon isValid={passwordIsValid && password === confirmPassword} />
           </DialogContent>

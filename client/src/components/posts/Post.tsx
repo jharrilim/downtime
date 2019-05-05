@@ -35,18 +35,16 @@ interface PostPropTypes extends WithStyles<typeof styles> {
 const Post = withStyles(styles) ((props: PostPropTypes) => {
   const { classes } = props;
   return (
-    <Card className={classes.card}>
+    <Card className={classes.card} component="article">
       <CardHeader title={props.title} subheader={props.date} />
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
 
         </Typography>
         {props.content.split('\n').map(content => (
-          <>
-            <Typography variant="body1" className={classes.content}>
-              {content}
-            </Typography>
-          </>
+          <Typography key={`${props.title}-${props.author}-${props.date}`} variant="body1" className={classes.content}>
+            {content}
+          </Typography>
         ))
 
         }

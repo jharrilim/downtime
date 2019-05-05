@@ -48,7 +48,7 @@ const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
                 <Button component={settingsLink} size="small"><SettingsIcon /></Button>
                 <Typography
                   component="h1"
-                  variant="headline"
+                  variant="h5"
                   color="inherit"
                   align="center"
                   noWrap

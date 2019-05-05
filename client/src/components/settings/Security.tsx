@@ -7,8 +7,8 @@ const Security = withStyles(styles)(() => {
 
   return (
     <>
-      <Typography component="h4" variant="headline">Settings</Typography>
-      <Typography component="p" variant="subheading">
+      <Typography component="h4" variant="h5">Settings</Typography>
+      <Typography component="p" variant="subtitle1">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie mi urna, id elementum mi bibendum at. Quisque non aliquam lacus. Duis in gravida libero, ut eleifend enim. Donec sit amet est finibus, efficitur turpis id, sollicitudin massa. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Curabitur consequat libero eget purus rutrum volutpat. Sed tempor nibh risus, a blandit nisi scelerisque eu. Aliquam interdum metus sed aliquet malesuada. Nunc a nulla pretium dui laoreet egestas.
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at feugiat urna, vel interdum quam. Etiam varius vestibulum convallis. Nunc bibendum nunc in dolor gravida, id pharetra magna facilisis. Phasellus sit amet sollicitudin purus, at imperdiet mauris. Phasellus sed dui odio. Donec volutpat, massa vitae elementum laoreet, leo neque viverra erat, at egestas metus ligula eu turpis. In hac habitasse platea dictumst. Proin dignissim nunc non fermentum lacinia. Morbi eu nisl consequat, viverra risus sed, iaculis sapien. Nunc finibus auctor quam, finibus vehicula libero pharetra vitae. Phasellus condimentum tellus tortor, non euismod leo fringilla at. Vivamus ultricies magna et leo facilisis vestibulum.
