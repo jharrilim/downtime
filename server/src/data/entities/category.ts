@@ -5,24 +5,20 @@ import { Lazy } from ".";
 
 @Entity()
 @ObjectType()
-export class Post {
+export class Category {
     @Field(type => ID)
     @PrimaryGeneratedColumn()
     readonly id!: number;
 
     @Field(type => String)
-    @Column()
-    content!: string;
-
-    @Field(type => String)
-    @Column()
-    title!: string;
+    @Column({ unique: true })
+    name!: string;
 
     @Field(type => Date)
     @CreateDateColumn()
     readonly dateCreated!: Date;
 
     @Field(type => User)
-    @ManyToOne(type => User, { lazy: true })
-    author!: Lazy<User>;
+    @ManyToOne(type => User, user => user.id, { lazy: true })
+    creator!: Lazy<User>;
 }

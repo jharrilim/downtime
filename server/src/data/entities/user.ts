@@ -1,9 +1,11 @@
 import { ObjectType, Field, ID, Authorized } from "type-graphql";
 import { Post } from "./post";
-import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToMany, JoinTable } from "typeorm";
+import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToMany, JoinTable, CreateDateColumn } from "typeorm";
 import { Lazy } from ".";
 import { Role } from "./role";
 import { Roles } from "../roles";
+import { Category } from "./category";
+import { Topic } from "./topic";
 
 @Entity()
 @ObjectType()
@@ -16,8 +18,12 @@ export class User {
     @Column()
     readonly username!: string;
 
+    @Field(type => Date)
+    @CreateDateColumn()
+    readonly dateJoined!: Date;
+
     @Field(type => String)
-    @Column()
+    @Column({ unique: true })
     email!: string;
 
     @Authorized([Roles.Admin])
@@ -36,4 +42,16 @@ export class User {
     @ManyToMany(type => Role, role => role.users)
     @JoinTable()
     roles!: Role[];
+
+    @Field(type => [Category], { nullable: 'items' })
+    @OneToMany(type => Category, category => category.id, { lazy: true, nullable: true })
+    createdCategories!: Lazy<Category[]>;
+
+    @Field(type => [Topic], { nullable: 'items' })
+    @OneToMany(type => Topic, topic => topic.id, { lazy: true, nullable: true })
+    createdTopics!: Lazy<Topic[]>;
+
+    @Field(type => [Topic], { nullable: 'items' })
+    @ManyToMany(type => Topic, topic => topic.id, { lazy: true, nullable: true })
+    adminTopics!: Lazy<Topic[]>;
 }

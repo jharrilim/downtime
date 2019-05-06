@@ -91,7 +91,6 @@ async function runWorker() {
         const defaultUser = (await userRepository.findOne({ where: {
             username: process.env.DB_USER || 'foo@mail.com',
         }}))!;
-        logger.info('default user: ' + defaultUser.email);
         const schema = await createSchema();
         const { url } = await bootstrap(schema, defaultUser);
         logger.info(`🚀 Server ready at ${url}`);
