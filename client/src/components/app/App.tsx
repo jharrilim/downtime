@@ -63,7 +63,7 @@ const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
                   <SearchIcon />
                 </IconButton>
                 <SignUp />
-                <SignIn />
+              { !user && <SignIn /> }
               </Toolbar>
               <Categories categories={mockCategories} />
               <main>
