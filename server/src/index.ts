@@ -16,15 +16,16 @@ import { logger } from './logging';
 dotenv.config();
 logger.info('Starting...');
 
-async function initialize() {
+async function createSchema() {
     const schema = await buildSchema({
-        resolvers: [`${__dirname}/data/resolvers/**/*.resolver.ts`],
+        resolvers: [
+            `${__dirname}/data/resolvers/**/*.resolver.ts`,
+            `${__dirname}/data/resolvers/**/*.resolver.js`
+        ],
         container: Container,
         authChecker
     });
-    const { defaultUser } = await seed();
-
-    return { schema, defaultUser };
+    return schema;
 }
 
 async function createServer(schema: GraphQLSchema, defaultUser: User) {
@@ -65,18 +66,17 @@ async function runMaster() {
         let conn: Connection | null = null;
         try {
             conn = await connect(true);
+            await seed();
+            const workerCount = cpus().length;
+            logger.info(`Creating ${workerCount} workers.`);
+            for (let i = 0; i < workerCount; i++) {
+                fork();
+            }
         } finally {
             if (conn)
                 await conn.close();
         }
     }
-    const workerCount = cpus().length;
-    logger.info(`Creating ${workerCount} workers.`);
-
-    for (let i = 0; i < workerCount; i++) {
-        fork();
-    }
-
     clusterOn('exit', worker => {
         logger.warn(`${worker.id} died.`);
         fork();
@@ -87,7 +87,12 @@ async function runWorker() {
     let conn: Connection | null = null;
     try {
         conn = await connect();
-        const { defaultUser, schema } = await initialize();
+        const userRepository = getRepository(User);
+        const defaultUser = (await userRepository.findOne({ where: {
+            username: process.env.DB_USER || 'foo@mail.com',
+        }}))!;
+        logger.info('default user: ' + defaultUser.email);
+        const schema = await createSchema();
         const { url } = await bootstrap(schema, defaultUser);
         logger.info(`🚀 Server ready at ${url}`);
 
