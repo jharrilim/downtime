@@ -139,7 +139,8 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
 
 const SignUpMutation = () => (
   <Mutation mutation={createUser}>
-    {(mutateFn, { data }) => {
+    {(mutateFn, { data, error }) => {
+      if (error) console.error(error);
       if (data) {
         const userInfo = {
           id: data.createUser.id,

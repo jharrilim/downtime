@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocalStorage, writeStorage } from '@rehooks/local-storage';
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions, FormLabel, Grid } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions, FormLabel, Grid, Popover, Snackbar } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { signIn, SignInInput } from '../../data/mutations/sign-in';
 
@@ -77,7 +77,7 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
             <Button
               onClick={e => {
                 e.preventDefault();
-                mutFormIsOpen(false);
+                // mutFormIsOpen(false);
                 onSubmit({ password, email });
               }}
               color="primary"
@@ -91,20 +91,52 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
   );
 });
 
-const SignIn = () => (
-  <Mutation mutation={signIn}>
-    {(mutateFn, { data }) => {
-      if (data) {
-        const userInfo = {
-          id: data.createUser.id,
-          username: data.createUser.username,
-          email: data.createUser.email
+const SignIn = () => {
+  const [snackbarOpen, mutSnackbarOpen] = useState(false);
+  return (
+    <Mutation mutation={signIn}>
+      {(mutateFn, { data, error }) => {
+        if(error) {
+          mutSnackbarOpen(true);
+          setTimeout(() => {
+            mutSnackbarOpen(false);
+          }, 6000);
+          return (
+            <>
+              <Snackbar 
+                open={snackbarOpen}
+                onClose={() => mutSnackbarOpen(false)}
+                autoHideDuration={6000} 
+                anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+                message={error.message} />
+              <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />
+            </>
+          );
         }
-        writeStorage('user', JSON.stringify(userInfo));
-      }
-      return <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />;
-    }}
-  </Mutation>
-);
+        if (data) {
+          const userInfo = {
+            id: data.createUser.id,
+            username: data.createUser.username,
+            email: data.createUser.email
+          }
+          writeStorage('user', JSON.stringify(userInfo));
+          mutSnackbarOpen(true);
+          setTimeout(() => {
+            mutSnackbarOpen(false);
+          }, 6000);
+          return <Snackbar 
+            open 
+            autoHideDuration={6000} 
+            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+            message={`Successfully Logged in as ${data.username}.`}
+            
+          />
+
+        }
+        return <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />;
+      }}
+    </Mutation>
+  );
+};
 
 export { SignIn };
