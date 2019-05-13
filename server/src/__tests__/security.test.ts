@@ -10,7 +10,7 @@ import { Role } from '../data/entities/role';
 
 describe('Security', () => {
     describe('authChecker', () => {
-        it('returns true when given a user with valid roles', () => {
+        it('returns true when given a user with valid roles', async () => {
             const roles = ['admin', 'user'];
             const user: User = {
                 id: 1234,
@@ -22,12 +22,16 @@ describe('Security', () => {
                 roles: [
                     { id: 1, name: 'admin' } as Role,
                     { id: 2, name: 'user' } as Role
-                ]
+                ],
+                adminTopics: [],
+                createdCategories: [],
+                createdTopics: [],
+                dateJoined: new Date(),
             };
 
             const result = authChecker({ context: { user } }, roles);
 
-            expect(result).toBe(true);
+            expect(await result).toBe(true);
         });
 
         it('returns false when given a user with invalid roles', () => {
@@ -41,7 +45,11 @@ describe('Security', () => {
                 salt: '128192371289',
                 roles: [
                     { id: 1, name: 'bloop' } as Role
-                ]
+                ],
+                adminTopics: [],
+                createdCategories: [],
+                createdTopics: [],
+                dateJoined: new Date(),
             };
 
             const result = authChecker({ context: { user } }, roles);
@@ -58,7 +66,11 @@ describe('Security', () => {
                 username: 'fooey',
                 passwordHash: 'asdasd',
                 salt: '128192371289',
-                roles: []
+                roles: [],
+                adminTopics: [],
+                createdCategories: [],
+                createdTopics: [],
+                dateJoined: new Date(),
             };
 
             const result = authChecker({ context: { user } }, roles);
@@ -77,7 +89,11 @@ describe('Security', () => {
                 roles: [
                     { id: 1, name: 'admin' } as Role,
                     { id: 2, name: 'user' } as Role
-                ]
+                ],
+                adminTopics: [],
+                createdCategories: [],
+                createdTopics: [],
+                dateJoined: new Date(),
             };
 
             const result = authChecker({ context: { user } }, []);
@@ -127,7 +143,11 @@ describe('Security', () => {
                 roles: [
                     { id: 1, name: 'admin' } as Role,
                     { id: 2, name: 'user' } as Role
-                ]
+                ],
+                adminTopics: [],
+                createdCategories: [],
+                createdTopics: [],
+                dateJoined: new Date(),
             };
 
             const result = await tokenifyUser(user);
@@ -155,7 +175,11 @@ describe('Security', () => {
                 roles: [
                     { id: 1, name: 'admin' } as Role,
                     { id: 2, name: 'user' } as Role
-                ]
+                ],
+                adminTopics: [],
+                createdCategories: [],
+                createdTopics: [],
+                dateJoined: new Date(),
             };
 
             const userToken = await tokenifyUser(user);
