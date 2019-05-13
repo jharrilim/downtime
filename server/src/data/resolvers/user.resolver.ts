@@ -1,4 +1,4 @@
-import { Service } from "typedi";
+import { Service, Inject } from "typedi";
 import { Resolver, Query, Arg, Int, Mutation, Authorized, Ctx } from "type-graphql";
 import { User } from "../entities/user";
 import { InjectRepository } from "typeorm-typedi-extensions";
@@ -7,14 +7,20 @@ import { UserInput } from "./types/user-input";
 import { encryptPassword } from "../../security";
 import { Roles } from "../roles";
 import { Context } from "./types/context";
+import { LoggerFactory } from "../../logging";
+import { Logger } from "winston";
 
 @Service()
 @Resolver(of => User)
 export class UserResolver {
-
+    private _logger: Logger;
     constructor(
-        @InjectRepository(User) private readonly userRepository: Repository<User>
-    ) { }
+        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @Inject(type => LoggerFactory) readonly loggerFactory: LoggerFactory
+    ) {
+        this._logger = loggerFactory.get();
+        this._logger.debug('Logger injected in UserResolver');
+     }
 
     @Authorized([Roles.General])
     @Query(returns => User)
@@ -38,6 +44,7 @@ export class UserResolver {
     @Authorized([Roles.Admin])
     @Query(returns => [User])
     async users(): Promise<User[]> {
+        this._logger.debug('Users called');
         return await this.userRepository.find();
     }
 

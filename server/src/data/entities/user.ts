@@ -39,9 +39,9 @@ export class User {
     posts!: Lazy<Post[]>;
 
     @Field(type => [Role])
-    @ManyToMany(type => Role, role => role.users)
+    @ManyToMany(type => Role, role => role.users, { lazy: true })
     @JoinTable()
-    roles!: Role[];
+    roles!: Lazy<Role[]>;
 
     @Field(type => [Category], { nullable: 'items' })
     @OneToMany(type => Category, category => category.id, { lazy: true, nullable: true })
