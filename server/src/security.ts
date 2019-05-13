@@ -71,9 +71,9 @@ export async function tokenifyUser(user: User): Promise<string> {
  * @export
  * @param {Partial<ResolverData<Context>>} resolverData
  * @param {string[]} roles
- * @returns {boolean} True if user is authorized, false if not.
+ * @returns {Promise<boolean>} True if user is authorized, false if not.
  */
-export function authChecker(resolverData: Partial<ResolverData<Context>>, roles: string[]) {
+export async function authChecker(resolverData: Partial<ResolverData<Context>>, roles: string[]) {
     if (!resolverData.context) {
         return false;
     }
@@ -82,5 +82,9 @@ export function authChecker(resolverData: Partial<ResolverData<Context>>, roles:
         return user !== undefined;
     if (!user) // and if no user, restrict access
         return false;
+    
+    if (user.roles instanceof Promise) {
+        return (await user.roles).some(role => roles.includes(role.name));
+    }
     return user.roles.some(role => roles.includes(role.name));
 }
