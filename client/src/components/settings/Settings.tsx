@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography, withStyles, Theme, createStyles, Grid, Divider, WithStyles } from '@material-ui/core';
 import { SettingsOptionsList } from './SettingsOptionsList';
 import { Route } from 'react-router';
-import { Profile } from './Profile';
+import { Profile } from './profile/Profile';
 import { Security } from './Security';
 
 const styles = (theme: Theme) => createStyles({

@@ -1,7 +1,7 @@
-import React from 'react';
-import { withStyles, Theme, createStyles, Typography, Card, CardHeader, Avatar, WithStyles, CardMedia } from '@material-ui/core';
+import React, { useState } from 'react';
+import { withStyles, Theme, createStyles, Typography, Card, CardHeader, Avatar, WithStyles, CardMedia, CardContent, Tabs, Tab } from '@material-ui/core';
 import useLocalStorage from '@rehooks/local-storage';
-import { User } from '../../data/models/User.model';
+import { User } from '../../../data/models/User.model';
 import { grey } from '@material-ui/core/colors';
 
 const styles = (theme: Theme) => createStyles({
@@ -14,6 +14,7 @@ interface ProfilePropTypes extends WithStyles<typeof styles> { }
 
 const Profile = withStyles(styles)(({ classes }: ProfilePropTypes) => {
   const [userString] = useLocalStorage('user');
+  const [tabValue, mutTabValue] = useState(0);
   const user = userString ? JSON.parse(userString as string) as User : null;
   if (!user) {
     return (
@@ -33,10 +34,13 @@ const Profile = withStyles(styles)(({ classes }: ProfilePropTypes) => {
           title={user.username}
           subheader={user.email !== user.username ? user.email : undefined}
         />
-
+        <CardContent>
+          <Tabs value={tabValue} onChange={(e, v: number) => mutTabValue(v)}>
+            <Tab label="Some Tab" />
+            <Tab label="Some Other Tab" />
+          </Tabs>
+        </CardContent>
       </Card>
-      <Typography component="h4" variant="h5">{user.username}</Typography>
-      
     </>
   );
 });
