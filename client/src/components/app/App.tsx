@@ -45,7 +45,7 @@ const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
               <Toolbar className={classes.toolbarMain}>
                 <Button component={homeLink} size="small"><HomeIcon /></Button>
                 <Button component={newPostLink} size="small"><AddIcon /></Button>
-                <Button component={settingsLink} size="small"><SettingsIcon /></Button>
+                <Button component={settingsLink} size="small"><SettingsIcon /></Button> 
                 <Typography
                   component="h1"
                   variant="h5"
