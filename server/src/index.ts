@@ -61,21 +61,23 @@ async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<Serv
 }
 
 async function runMaster() {
-    if (process.env.NODE_ENV !== 'production') {
-        logger.debug('Dropping Schema...');
-        let conn: Connection | null = null;
-        try {
+    let conn: Connection | null = null;
+    try {
+        if (process.env.NODE_ENV === 'production') {
+            conn = await connect(false);
+        } else {
+            logger.debug('Dropping Schema...');
             conn = await connect(true);
             await seed();
-            const workerCount = cpus().length;
-            logger.info(`Creating ${workerCount} workers.`);
-            for (let i = 0; i < workerCount; i++) {
-                fork();
-            }
-        } finally {
-            if (conn)
-                await conn.close();
         }
+        const workerCount = cpus().length;
+        logger.info(`Creating ${workerCount} workers.`);
+        for (let i = 0; i < workerCount; i++) {
+            fork();
+        }
+    } finally {
+        if (conn)
+            await conn.close();
     }
     clusterOn('exit', worker => {
         logger.warn(`${worker.id} died.`);
@@ -88,14 +90,16 @@ async function runWorker() {
     try {
         conn = await connect();
         const userRepository = getRepository(User);
-        const defaultUser = (await userRepository.findOne({ where: {
-            username: process.env.DB_USER || 'foo@mail.com',
-        }}))!;
+        const defaultUser = (await userRepository.findOne({
+            where: {
+                username: process.env.DB_USER || 'foo@mail.com',
+            }
+        }))!;
         const schema = await createSchema();
         const { url } = await bootstrap(schema, defaultUser);
         logger.info(`🚀 Server ready at ${url}`);
 
-    } catch(reason) {
+    } catch (reason) {
         logger.error(reason);
     } finally {
         if (conn)
