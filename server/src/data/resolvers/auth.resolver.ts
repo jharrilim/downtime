@@ -1,6 +1,6 @@
 import { Mutation, Arg, Resolver } from "type-graphql";
 import { LoginWithPasswordInput } from "./types/login-with-password-input";
-import { encryptPassword, tokenifyUser } from "../../security";
+import { encryptPassword, tokenifyUser, parseUserFromToken } from "../../security";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { User } from "../entities/user";
 import { Repository } from "typeorm";
@@ -37,5 +37,22 @@ export class AuthResolver {
         }
 
         throw new Error('Invalid Credentials for user: ' + usernameOrEmail);
+    }
+
+    @Mutation(returns => String)
+    async verifyToken(@Arg('loginWithTokenInput') token: string): Promise<String> {
+        const {
+            data: {
+                id, passwordHash, email, salt, dateJoined
+            }
+        } = await parseUserFromToken(token);
+        
+        const user = await this.userRepository.findOne({
+            where: {
+                id, passwordHash, email, salt, dateJoined
+            }
+        });
+
+        return user ? token : '';
     }
 }
