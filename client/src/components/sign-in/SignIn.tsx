@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { writeStorage } from '@rehooks/local-storage';
 import { Button, Dialog, DialogTitle, DialogContent, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions, FormLabel, Grid, Popover, Snackbar } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
-import { signIn, SignInInput } from '../../data/mutations/sign-in';
+import { signIn, LoginWithPasswordInput } from '../../data/mutations/sign-in';
 import { SlowSnackbar } from '../common/Snackbars';
 
 const styles = (theme: Theme) => ({
@@ -15,7 +15,7 @@ const styles = (theme: Theme) => ({
 });
 
 interface SignInPropTypes extends WithStyles<typeof styles> { 
-  onSubmit: (evt: SignInInput) => any;
+  onSubmit: (evt: LoginWithPasswordInput) => any;
 }
 
 const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) => {
@@ -27,11 +27,11 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
     mutFormIsOpen(false);
   };
   const usernameOrEmailChanged = (usernameOrEmail: string) => {
-
+    mutEmail(usernameOrEmail);
   };
 
   const passwordChanged = (password: string) => {
-
+    mutPassword(password);
   };
   return (
     <>
@@ -106,7 +106,7 @@ const SignIn = () => {
           return (
             <>
               <SlowSnackbar message={error.networkError ? error.networkError.message : error.message} />
-              <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />
+              <SignInBase onSubmit={(evt: LoginWithPasswordInput) => mutateFn({ variables: { loginWithPasswordInput: evt } })} />
             </>
           );
         }
@@ -119,7 +119,11 @@ const SignIn = () => {
           writeStorage('user', JSON.stringify(userInfo));
           return <SlowSnackbar message={`Successfully logged in as ${userInfo.username}.`} />;
         }
-        return <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />;
+        return <SignInBase onSubmit={(evt: LoginWithPasswordInput) => mutateFn({ 
+          variables: { 
+            loginWithPasswordInput: evt 
+          }
+        })} />;
       }}
     </Mutation>
   );
