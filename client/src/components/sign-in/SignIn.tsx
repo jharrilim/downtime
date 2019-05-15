@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { useLocalStorage, writeStorage } from '@rehooks/local-storage';
+import { writeStorage } from '@rehooks/local-storage';
 import { Button, Dialog, DialogTitle, DialogContent, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions, FormLabel, Grid, Popover, Snackbar } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 import { signIn, SignInInput } from '../../data/mutations/sign-in';
+import { SlowSnackbar } from '../common/Snackbars';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -18,7 +19,6 @@ interface SignInPropTypes extends WithStyles<typeof styles> {
 }
 
 const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) => {
-  const [user] = useLocalStorage('user');
   const [formIsOpen, mutFormIsOpen] = useState(false);
   const [email, mutEmail] = useState('');
   const [password, mutPassword] = useState('');
@@ -26,7 +26,13 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
   const dialogClosed = () => {
     mutFormIsOpen(false);
   };
+  const usernameOrEmailChanged = (usernameOrEmail: string) => {
 
+  };
+
+  const passwordChanged = (password: string) => {
+
+  };
   return (
     <>
       <Button
@@ -56,6 +62,7 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
                   type="email"
                   className={classes.email}
                   autoComplete="email"
+                  onChange={e => usernameOrEmailChanged(e.target.value)}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -66,6 +73,7 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
                   type="password"
                   className={classes.password}
                   autoComplete="current-password"
+                  onChange={e => passwordChanged(e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -77,7 +85,6 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
             <Button
               onClick={e => {
                 e.preventDefault();
-                // mutFormIsOpen(false);
                 onSubmit({ usernameOrEmail: email, password });
               }}
               color="primary"
@@ -92,23 +99,13 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
 });
 
 const SignIn = () => {
-  const [snackbarOpen, mutSnackbarOpen] = useState(false);
   return (
     <Mutation mutation={signIn}>
       {(mutateFn, { data, error }) => {
         if(error) {
-          mutSnackbarOpen(true);
-          setTimeout(() => {
-            mutSnackbarOpen(false);
-          }, 6000);
           return (
             <>
-              <Snackbar 
-                open={snackbarOpen}
-                onClose={() => mutSnackbarOpen(false)}
-                autoHideDuration={6000} 
-                anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-                message={error.message} />
+              <SlowSnackbar message={error.networkError ? error.networkError.message : error.message} />
               <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />
             </>
           );
@@ -120,18 +117,7 @@ const SignIn = () => {
             email: data.createUser.email
           }
           writeStorage('user', JSON.stringify(userInfo));
-          mutSnackbarOpen(true);
-          setTimeout(() => {
-            mutSnackbarOpen(false);
-          }, 6000);
-          return <Snackbar 
-            open 
-            autoHideDuration={6000} 
-            anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
-            message={`Successfully Logged in as ${data.username}.`}
-            
-          />
-
+          return <SlowSnackbar message={`Successfully logged in as ${userInfo.username}.`} />;
         }
         return <SignInBase onSubmit={(evt: SignInInput) => mutateFn({ variables: { signInInput: evt } })} />;
       }}

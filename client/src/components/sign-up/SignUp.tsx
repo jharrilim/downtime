@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles } from '@material-ui/core';
+import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles, Snackbar } from '@material-ui/core';
 import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
 import { createUser } from '../../data/mutations/create-user';
 import { SignUpButton } from './SignUpButton';
 import { useLocalStorage, writeStorage, deleteFromStorage } from '@rehooks/local-storage';
+import { SlowSnackbar } from '../common/Snackbars';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -137,22 +138,35 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
   );
 });
 
-const SignUpMutation = () => (
-  <Mutation mutation={createUser}>
-    {(mutateFn, { data, error }) => {
-      if (error) console.error(error);
-      if (data) {
-        const userInfo = {
-          id: data.createUser.id,
-          username: data.createUser.username,
-          email: data.createUser.email
+
+
+const SignUpMutation = () => {
+  return (
+    <Mutation mutation={createUser}>
+      {(mutateFn, { data, error }) => {
+        if (error) {
+          if (error.graphQLErrors) {
+            return (
+              <>
+                <SlowSnackbar message={error.graphQLErrors[0].message} />
+                <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />
+              </>
+            );
+          }
         }
-        writeStorage('user', JSON.stringify(userInfo));
-      }
-      return <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
-    }}
-  </Mutation>
-);
+        if (data) {
+          const userInfo = {
+            id: data.createUser.id,
+            username: data.createUser.username,
+            email: data.createUser.email
+          }
+          writeStorage('user', JSON.stringify(userInfo));
+        }
+        return <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
+      }}
+    </Mutation>
+  )
+};
 
 
 const SignUp = SignUpMutation;
