@@ -1,18 +1,16 @@
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
-export const traceOrDate = (date: Date) => {
+export const traceOrDate = (momentTime: Moment) => {
 
     return function (thresholdHours: number = 24) {
         const now = moment();
-        const d = moment(date);
-        const hourDiff = now.diff(d, 'hours');
+        const hourDiff = now.diff(momentTime, 'hours');
         if (hourDiff > thresholdHours)
-            return moment(date).format('MMMM Do YYYY, h:mm:ss a');
-        
+            return moment(momentTime).format('MMMM Do YYYY, h:mm:ss a');
         
         if (hourDiff > 0)
             return `${hourDiff} hours ago`;
 
-        return `${now.diff(d, 'minutes')} minutes ago`
+        return `${momentTime.diff(now, 'minutes')} minutes ago`;
     }
 }

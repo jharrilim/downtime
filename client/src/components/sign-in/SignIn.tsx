@@ -14,7 +14,7 @@ const styles = (theme: Theme) => ({
 });
 
 interface SignInPropTypes extends WithStyles<typeof styles> { 
-  onSubmit: (evt: any) => any;
+  onSubmit: (evt: SignInInput) => any;
 }
 
 const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) => {
@@ -52,7 +52,7 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
                   autoFocus
                   margin="normal"
                   id="name"
-                  label="Email Address"
+                  label="Username or Email Address"
                   type="email"
                   className={classes.email}
                   autoComplete="email"
@@ -78,7 +78,7 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
               onClick={e => {
                 e.preventDefault();
                 // mutFormIsOpen(false);
-                onSubmit({ password, email });
+                onSubmit({ usernameOrEmail: email, password });
               }}
               color="primary"
             >

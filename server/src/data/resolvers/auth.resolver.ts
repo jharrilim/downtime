@@ -40,7 +40,7 @@ export class AuthResolver {
     }
 
     @Mutation(returns => String)
-    async verifyToken(@Arg('loginWithTokenInput') token: string): Promise<String> {
+    async verifyToken(@Arg('verifyTokenInput') token: string): Promise<String> {
         const {
             data: {
                 id, passwordHash, email, salt, dateJoined
