@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, CreateDateColumn, OneToMany, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, CreateDateColumn, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./user";
 import { Lazy } from ".";
@@ -21,7 +21,7 @@ export class Topic {
     readonly dateCreated!: Date;
 
     @Field(type => User)
-    @ManyToOne(type => User, { lazy: true })
+    @ManyToOne(type => User, user => user.createdTopics, { lazy: true })
     creator!: Lazy<User>;
 
     @Field(type => Category)
@@ -29,10 +29,11 @@ export class Topic {
     category!: Lazy<Category>;
 
     @Field(type => [Post])
-    @OneToMany(type => Post, post => post.id, { lazy: true })
+    @OneToMany(type => Post, post => post.topic, { lazy: true })
     posts!: Lazy<Post>;
 
     @Field(type => [User], { nullable: 'items' })
-    @ManyToMany(type => User, user => user.id, { lazy: true, nullable: true })
+    @ManyToMany(type => User, user => user.adminTopics, { lazy: true, nullable: true })
+    @JoinTable()
     admins!: Lazy<User[]>;
 }

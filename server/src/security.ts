@@ -5,6 +5,7 @@ import { readFile } from 'fs';
 import { User } from "./data/entities/user";
 import { ResolverData } from "type-graphql";
 import { Context } from "./data/resolvers/types/context";
+import { getRepository } from "typeorm";
 
 const rf = promisify(readFile);
 
@@ -82,9 +83,18 @@ export async function authChecker(resolverData: Partial<ResolverData<Context>>, 
         return user !== undefined;
     if (!user) // and if no user, restrict access
         return false;
-    
-    if (user.roles instanceof Promise) {
-        return (await user.roles).some(role => roles.includes(role.name));
-    }
-    return user.roles.some(role => roles.includes(role.name));
+    const userRepository = getRepository(User);
+    const foundUser = await userRepository.findOne({ 
+        where: { 
+            id: user.id,
+            email: user.email,
+            passwordHash: user.passwordHash,
+            salt: user.salt,
+        },
+        relations: [ 'roles' ]
+    });
+    if (!foundUser) 
+        return false;
+
+    return foundUser.roles.some(role => roles.includes(role.name));
 }

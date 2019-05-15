@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, ManyToOne, Column, CreateDateColumn } f
 import { ObjectType, Field, ID } from "type-graphql";
 import { User } from "./user";
 import { Lazy } from ".";
+import { Topic } from "./topic";
 
 @Entity()
 @ObjectType()
@@ -22,7 +23,11 @@ export class Post {
     @CreateDateColumn()
     readonly dateCreated!: Date;
 
+    @Field()
+    @ManyToOne(type => Topic, topic => topic.posts, { lazy: true })
+    topic!: Topic;
+
     @Field(type => User)
-    @ManyToOne(type => User, { lazy: true })
+    @ManyToOne(type => User, user => user.posts, { lazy: true })
     author!: Lazy<User>;
 }

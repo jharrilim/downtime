@@ -18,13 +18,13 @@ export class AuthResolver {
         @Arg('loginWithPasswordInput')
         { usernameOrEmail, password }: LoginWithPasswordInput
     ): Promise<String> {
+        
         const user = await this.userRepository.findOne({
             where: [
                 { username: usernameOrEmail },
                 { email: usernameOrEmail }
             ],
-            select: ['id', 'email', 'passwordHash', 'username', 'salt', 'roles'],
-            // todo: don't select circular objects
+            relations: [ 'roles' ]
         });
 
         if (!user)

@@ -34,24 +34,24 @@ export class User {
     @Column()
     salt!: string;
 
+    @Field(type => [Role])
+    @ManyToMany(type => Role, role => role.users, { eager: true })
+    @JoinTable()
+    roles!: Role[];
+
     @Field(type => [Post])
     @OneToMany(type => Post, post => post.author, { lazy: true })
     posts!: Lazy<Post[]>;
 
-    @Field(type => [Role])
-    @ManyToMany(type => Role, role => role.users, { lazy: true })
-    @JoinTable()
-    roles!: Lazy<Role[]>;
-
     @Field(type => [Category], { nullable: 'items' })
-    @OneToMany(type => Category, category => category.id, { lazy: true, nullable: true })
+    @OneToMany(type => Category, category => category.creator, { lazy: true, nullable: true })
     createdCategories!: Lazy<Category[]>;
 
     @Field(type => [Topic], { nullable: 'items' })
-    @OneToMany(type => Topic, topic => topic.id, { lazy: true, nullable: true })
+    @OneToMany(type => Topic, topic => topic.creator, { lazy: true, nullable: true })
     createdTopics!: Lazy<Topic[]>;
 
     @Field(type => [Topic], { nullable: 'items' })
-    @ManyToMany(type => Topic, topic => topic.id, { lazy: true, nullable: true })
+    @ManyToMany(type => Topic, topic => topic.admins, { lazy: true, nullable: true })
     adminTopics!: Lazy<Topic[]>;
 }
