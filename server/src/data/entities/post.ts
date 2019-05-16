@@ -20,7 +20,7 @@ export class Post {
     title!: string;
 
     @Field(type => Date)
-    @CreateDateColumn()
+    @CreateDateColumn({ readonly: true , type: 'timestamptz'})
     readonly dateCreated!: Date;
 
     @Field()
