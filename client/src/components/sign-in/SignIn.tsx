@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { writeStorage } from '@rehooks/local-storage';
-import { Button, Dialog, DialogTitle, DialogContent, TextField, withStyles, Theme, WithStyles, FormHelperText, DialogActions, FormLabel, Grid, Popover, Snackbar } from '@material-ui/core';
+import { Button, Dialog, DialogTitle, DialogContent, TextField, withStyles, Theme, WithStyles, Grid, DialogActions } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
-import { signIn, LoginWithPasswordInput } from '../../data/mutations/sign-in';
+import { loginWithPassword, LoginWithPasswordInput, LoginWithPasswordResponse } from '../../data/mutations/login-with-password';
 import { SlowSnackbar } from '../common/Snackbars';
+import { profileQuery, ProfileQueryResponse } from '../../data/queries/profile';
 
 const styles = (theme: Theme) => ({
   email: {
@@ -99,9 +100,10 @@ const SignInBase = withStyles(styles)(({ classes, onSubmit }: SignInPropTypes) =
 });
 
 const SignIn = () => {
+
   return (
-    <Mutation mutation={signIn}>
-      {(mutateFn, { data, error }) => {
+    <Mutation<LoginWithPasswordResponse> mutation={loginWithPassword} >
+      {(mutateFn, { data, error, client }) => {
         if(error) {
           return (
             <>
@@ -111,19 +113,21 @@ const SignIn = () => {
           );
         }
         if (data) {
-          const userInfo = {
-            id: data.createUser.id,
-            username: data.createUser.username,
-            email: data.createUser.email
-          }
-          writeStorage('user', JSON.stringify(userInfo));
-          return <SlowSnackbar message={`Successfully logged in as ${userInfo.username}.`} />;
+          
+          const token = data.loginWithPassword;
+          document.cookie = `secure;samesite=strict;token=${token};`;
+          client.query<ProfileQueryResponse>({query: profileQuery}).then(resp => {
+            writeStorage('user', JSON.stringify(resp.data.profile));
+            
+          });
         }
-        return <SignInBase onSubmit={(evt: LoginWithPasswordInput) => mutateFn({ 
-          variables: { 
-            loginWithPasswordInput: evt 
-          }
-        })} />;
+        return <SignInBase 
+          onSubmit={(evt: LoginWithPasswordInput) => mutateFn({ 
+            variables: { 
+              loginWithPasswordInput: evt 
+            }
+          })
+        }/>;
       }}
     </Mutation>
   );

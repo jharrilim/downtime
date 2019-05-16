@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 
-export const signIn = gql`
+export const loginWithPassword = gql`
   mutation loginWithPassword($loginWithPasswordInput: LoginWithPasswordInput!){
     loginWithPassword(loginWithPasswordInput: $loginWithPasswordInput)
   }
@@ -9,4 +9,8 @@ export const signIn = gql`
 export interface LoginWithPasswordInput {
   usernameOrEmail: string;
   password: string;
+}
+
+export interface LoginWithPasswordResponse {
+  loginWithPassword: string;
 }
