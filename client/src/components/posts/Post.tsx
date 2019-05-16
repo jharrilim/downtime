@@ -36,7 +36,7 @@ const Post = withStyles(styles) ((props: PostPropTypes) => {
   const { classes } = props;
   return (
     <Card className={classes.card} component="article">
-      <CardHeader title={props.title} subheader={props.date} />
+      <CardHeader title={props.title} subheader={props.date} avatar={`${props.author[0].toUpperCase()}`} />
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
 

@@ -31,16 +31,20 @@ const queryResultHandler = (
     <Grid container spacing={24}>
       {data!.posts
         .sort((a, b) => -moment(a.dateCreated).diff(b.dateCreated))
-        .map(({ content, author, dateCreated, title }) => (
-          <Grid item lg={'auto'} sm={'auto'} key={`${author.username}-${title}-${dateCreated || ''}`}>
-            <Post
-              key={`${author.username}-${title}`}
-              content={content}
-              author={author.username}
-              title={title}
-              date={traceOrDate(moment(dateCreated!))()} />
-          </Grid>
-        ))}
+        .map(({ content, author, dateCreated, title }) => {
+
+          return (
+            <Grid item lg={'auto'} sm={'auto'} key={`${author.username}-${title}-${dateCreated || ''}`}>
+              <Post
+                key={`${author.username}-${title}`}
+                content={content}
+                author={author.username}
+                title={title}
+                date={traceOrDate(moment(dateCreated!))()} />
+            </Grid>
+          );
+        })
+      }
     </Grid>
   );
 }

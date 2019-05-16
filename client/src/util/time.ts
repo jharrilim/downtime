@@ -10,7 +10,7 @@ export const traceOrDate = (momentTime: Moment) => {
         
         if (hourDiff > 0)
             return `${hourDiff} hours ago`;
-
-        return `${momentTime.diff(now, 'minutes')} minutes ago`;
+        
+        return momentTime.fromNow();
     }
 }
