@@ -24,7 +24,7 @@ export class UserResolver {
 
     @Authorized([Roles.General])
     @Query(returns => User)
-    async self(@Ctx() { user }: Context): Promise<User> {
+    async profile(@Ctx() { user }: Context): Promise<User> {
         if (!user) {
             throw Error('User must be logged in');
         }
@@ -44,19 +44,30 @@ export class UserResolver {
     @Authorized([Roles.Admin])
     @Query(returns => [User])
     async users(): Promise<User[]> {
-        this._logger.debug('Users called');
         return await this.userRepository.find();
     }
 
     @Mutation(returns => User)
     async createUser(@Arg('userInput') { email, password, username }: UserInput): Promise<User> {
         const { salt, passwordHash } = encryptPassword(password);
-        const user = await this.userRepository.create({
-            email,
-            passwordHash,
-            salt,
-            username: username || email
-        });
-        return await this.userRepository.save(user);
+        try {
+            const user = await this.userRepository.create({
+                email,
+                passwordHash,
+                salt,
+                username: username || email
+            });
+            return await this.userRepository.save(user);
+        } catch (err) {
+            if (err.detail && typeof err.detail === 'string') {
+                const r = /^Key \((\w+)\)=\(((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\]))\)/;
+                const groups = r.exec(err.detail);
+                if (groups) {
+                    throw new Error(`Oops, that ${groups[1]}, '${groups[2]}', already exists.`);
+                }
+            }
+            this._logger.error(err);
+            throw new Error('Oops, it seems like there was an error on our side. Please try again.');
+        }
     }
 }
