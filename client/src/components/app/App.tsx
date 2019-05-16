@@ -23,9 +23,12 @@ const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
 const settingsLink = (props: any) => <Link {...props} to="/settings" style={{ textDecoration: "none" }} />;
 
+const serverUrl = process.env.NODE_ENV !== 'production'
+  ? `http://${location.hostname}:8080`
+  : process.env.SERVER_URL || `http://${location.hostname}/api`;
+
 const client = new ApolloClient({
-  uri: process.env.NOW_URL ? process.env.NOW_URL + '/api' :
-    process.env.SERVER_URL || `http://${location.hostname}:8080`
+  uri: serverUrl
 });
 
 const mockCategories = ['foo', 'bar', 'baz', 'qux', 'qwop'];
