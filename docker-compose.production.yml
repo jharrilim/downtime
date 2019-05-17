@@ -2,6 +2,8 @@ version: '3'
 services:
   client:
     build: ./client
+    environment:
+      NODE_ENV: production
     ports:
       - "80:80"
     depends_on: 
@@ -13,6 +15,7 @@ services:
       PORT: 8080
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+      DB_PORT: 5432
       PRIVATE_KEY: ${PRIVATE_KEY}
       DB_HOST: db
       NODE_ENV: production
