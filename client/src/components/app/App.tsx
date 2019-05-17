@@ -25,7 +25,7 @@ const settingsLink = (props: any) => <Link {...props} to="/settings" style={{ te
 
 const serverUrl = process.env.NODE_ENV !== 'production'
   ? `http://${location.hostname}:8080`
-  : process.env.SERVER_URL || `http://${location.hostname}/api`;
+  : process.env.SERVER_URL || `http://${location.hostname}:${location.port}/api`;
 
 const client = new ApolloClient({
   uri: serverUrl
