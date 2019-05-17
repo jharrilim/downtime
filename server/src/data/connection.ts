@@ -26,7 +26,7 @@ export async function connect(dropSchema: boolean = false): Promise<Connection> 
 
     return await createConnection({
         type: 'postgres',
-        database: process.env.DB_USER || 'admin',
+        database: process.env.DB_NAME || process.env.DB_USER || 'admin',
         username: process.env.DB_USER || 'admin',
         password: process.env.DB_PASSWORD || 'postgres',
         port: +(process.env.DB_PORT || 5432),
