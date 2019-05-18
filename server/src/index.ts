@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import { ApolloServer, ServerInfo } from 'apollo-server';
 import { Container } from 'typedi';
-import { useContainer, getRepository, Connection } from 'typeorm';
+import { useContainer, getRepository, Connection, createConnection } from 'typeorm';
 import { buildSchema } from "type-graphql";
-import { connect, seed } from './data/connection';
+import { seed } from './data/seed';
 import { Context } from './data/resolvers/types/context';
 import { User } from './data/entities/user';
 import { parseUserFromToken, authChecker } from './security';
@@ -55,7 +55,7 @@ async function createServer(schema: GraphQLSchema, defaultUser: User) {
 async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<ServerInfo> {
     const port = +(process.env.PORT || 8080);
     useContainer(Container);
-    await connect();
+    await createConnection();
     const server = await createServer(schema, defaultUser);
     return await server.listen(port);
 }
@@ -64,10 +64,11 @@ async function runMaster() {
     let conn: Connection | null = null;
     try {
         if (process.env.NODE_ENV === 'production') {
-            conn = await connect(false);
+            conn = await createConnection();
+            await conn.runMigrations();
         } else {
-            logger.debug('Dropping Schema...');
-            conn = await connect(true);
+            logger.debug('Creating connection and seeding data.');
+            conn = await createConnection();
             await seed();
         }
         const workerCount = cpus().length;
@@ -88,7 +89,7 @@ async function runMaster() {
 async function runWorker() {
     let conn: Connection | null = null;
     try {
-        conn = await connect();
+        conn = await createConnection();
         const userRepository = getRepository(User);
         const defaultUser = (await userRepository.findOne({
             where: {
