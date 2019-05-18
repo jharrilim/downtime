@@ -14,6 +14,10 @@ So far:
 - Field level authorization
 - Resolver authorization
 - Unit tests with Jest, apollo-server-testing
+- Node clustering
+  - Automatic restart on failure
+  - One process for each core on the machine
+  - Round robin load balancing
 
 ## On the Client
 
