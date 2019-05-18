@@ -13,6 +13,7 @@ So far:
 - Lazy relations
 - Field level authorization
 - Resolver authorization
+- Unit tests with Jest, apollo-server-testing
 
 ## On the Client
 
@@ -26,3 +27,8 @@ So far:
 - React hooks
 - Typescript
 - Swipeable tabs in profile
+
+## Overall
+
+- Docker-compose setup for development and production
+- Nginx hosts static files generated from client and acts as reverse proxy to the server
