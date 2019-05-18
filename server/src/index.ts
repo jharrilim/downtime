@@ -16,7 +16,7 @@ import { logger } from './logging';
 dotenv.config();
 logger.info('Starting...');
 
-async function createSchema() {
+export async function createSchema() {
     const schema = await buildSchema({
         resolvers: [
             `${__dirname}/data/resolvers/**/*.resolver.ts`,
