@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApolloProvider } from 'react-apollo';
 import ApolloClient from 'apollo-boost';
-import { withStyles, CssBaseline, WithStyles, Toolbar, Button, Typography } from '@material-ui/core';
+import { withStyles, CssBaseline, WithStyles, Toolbar, Button, Typography, Tooltip } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
@@ -46,9 +46,15 @@ const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
           <div className="App">
             <div className={classes.layout}>
               <Toolbar className={classes.toolbarMain}>
-                <Button component={homeLink} size="small"><HomeIcon /></Button>
-                <Button component={newPostLink} size="small"><AddIcon /></Button>
-                <Button component={settingsLink} size="small"><SettingsIcon /></Button> 
+                <Tooltip title="Home">
+                  <Button component={homeLink} size="small"><HomeIcon /></Button>
+                </Tooltip>
+                <Tooltip title="Post">
+                  <Button component={newPostLink} size="small" ><AddIcon /></Button>
+                </Tooltip>
+                <Tooltip title="Settings">
+                  <Button component={settingsLink} size="small"><SettingsIcon /></Button> 
+                </Tooltip>
                 <Typography
                   component="h1"
                   variant="h5"
