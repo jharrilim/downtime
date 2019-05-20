@@ -3,6 +3,7 @@ import { withStyles, Theme, createStyles, Typography, Card, CardHeader, Avatar, 
 import useLocalStorage from '@rehooks/local-storage';
 import { User } from '../../../data/models/User.model';
 import { grey } from '@material-ui/core/colors';
+import SwipeableViews from 'react-swipeable-views';
 
 const styles = (theme: Theme) => createStyles({
   avatar: {
@@ -36,9 +37,13 @@ const Profile = withStyles(styles)(({ classes }: ProfilePropTypes) => {
         />
         <CardContent>
           <Tabs value={tabValue} onChange={(e, v: number) => mutTabValue(v)}>
-            <Tab label="Some Tab" />
-            <Tab label="Some Other Tab" />
+            <Tab label="Posts" />
+            <Tab label="Comments" />
           </Tabs>
+          <SwipeableViews index={tabValue} onChangeIndex={i => mutTabValue(i)}>
+            <p>hihihih</p>
+            <p>hohohohoh</p>
+          </SwipeableViews>
         </CardContent>
       </Card>
     </>
