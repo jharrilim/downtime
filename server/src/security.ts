@@ -8,6 +8,7 @@ import { Context } from "./data/resolvers/types/context";
 import { getRepository } from "typeorm";
 
 const rf = promisify(readFile);
+const keyPath = '/etc/certs/key.pem';
 
 type JWTResult<T> = {
     iat: string,
@@ -47,7 +48,7 @@ export function encryptPassword(password: string, salt: string = generateSalt())
  * @returns {Promise<JWTResult<User>>}
  */
 export async function parseUserFromToken(token: string): Promise<JWTResult<User>> {
-    const privateKey = await rf(process.env.PRIVATE_KEY || `${__dirname}/../key.pem`);
+    const privateKey = await rf(keyPath);
     return verify(token, privateKey, { algorithms: ['RS256'] }) as JWTResult<User>;
 }
 
@@ -59,7 +60,7 @@ export async function parseUserFromToken(token: string): Promise<JWTResult<User>
  * @returns {Promise<string>}
  */
 export async function tokenifyUser(user: User): Promise<string> {
-    const privateKey = await rf(process.env.PRIVATE_KEY || `${__dirname}/../key.pem`);
+    const privateKey = await rf(keyPath);
     const userToken: Partial<JWTResult<User>> = {
         data: user
     };
