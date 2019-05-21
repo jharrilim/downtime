@@ -19,7 +19,7 @@ export class RoleResolver {
     }
 
     @Query(returns => [Role])
-    async Roles(): Promise<Role[]> {
+    async roles(): Promise<Role[]> {
         return await this.RoleRepository.find();
     }
 
