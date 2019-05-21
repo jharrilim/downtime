@@ -1,6 +1,7 @@
 import { Service, Inject } from "typedi";
 import { Resolver, Query, Arg, Int, Mutation, Authorized, Ctx } from "type-graphql";
 import { User } from "../entities/user";
+import { Role } from "../entities/role";
 import { InjectRepository } from "typeorm-typedi-extensions";
 import { Repository } from "typeorm";
 import { UserInput } from "./types/user-input";
@@ -9,7 +10,6 @@ import { Roles } from "../roles";
 import { Context } from "./types/context";
 import { LoggerFactory } from "../../logging";
 import { Logger } from "winston";
-import { Role } from "data/entities/role";
 
 @Service()
 @Resolver(of => User)
