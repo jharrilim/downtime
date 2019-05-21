@@ -9,6 +9,7 @@ import { Roles } from "../roles";
 import { Context } from "./types/context";
 import { LoggerFactory } from "../../logging";
 import { Logger } from "winston";
+import { Role } from "data/entities/role";
 
 @Service()
 @Resolver(of => User)
@@ -16,6 +17,7 @@ export class UserResolver {
     private _logger: Logger;
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
         @Inject(type => LoggerFactory) readonly loggerFactory: LoggerFactory
     ) {
         this._logger = loggerFactory.get();
@@ -51,11 +53,18 @@ export class UserResolver {
     async createUser(@Arg('userInput') { email, password, username }: UserInput): Promise<User> {
         const { salt, passwordHash } = encryptPassword(password);
         try {
+            const role = await this.roleRepository.findOne({ where: { name: Roles.General }});
+            if(!role) {
+                throw Error('Could get role "General" from the database');
+            }
             const user = await this.userRepository.create({
                 email,
                 passwordHash,
                 salt,
-                username: username || email
+                username: username || email,
+                roles: [
+                    role
+                ]
             });
             return await this.userRepository.save(user);
         } catch (err) {
