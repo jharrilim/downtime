@@ -19,6 +19,8 @@ services:
       PRIVATE_KEY: ${PRIVATE_KEY}
       DB_HOST: db
       NODE_ENV: production
+    volumes: 
+      - ${PRIVATE_KEY}:${PRIVATE_KEY}
     ports:
       - "8080:8080"
     depends_on:
