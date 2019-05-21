@@ -1,4 +1,5 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import {MigrationInterface, QueryRunner, getConnection} from "typeorm";
+import { Role } from "../entities/role";
 
 export class InitialMigration1558193281559 implements MigrationInterface {
 
@@ -24,6 +25,18 @@ export class InitialMigration1558193281559 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "user_roles_role" ADD CONSTRAINT "FK_5f9286e6c25594c6b88c108db77" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "user_roles_role" ADD CONSTRAINT "FK_4be2f7adf862634f5f803d246b8" FOREIGN KEY ("roleId") REFERENCES "role"("id") ON DELETE CASCADE ON UPDATE NO ACTION`);
         await queryRunner.query(`CREATE TABLE "query-result-cache" ("id" SERIAL NOT NULL, "identifier" character varying, "time" bigint NOT NULL, "duration" integer NOT NULL, "query" text NOT NULL, "result" text NOT NULL, CONSTRAINT "PK_6a98f758d8bfd010e7e10ffd3d3" PRIMARY KEY ("id"))`);
+
+        // Seed roles
+        queryRunner.manager
+            .createQueryBuilder()
+            .insert()
+            .into(Role)
+            .values([
+                { id: 1, name: 'general' },
+                { id: 2, name: 'admin' },
+                { id: 3, name: 'moderator' }
+            ])
+            .execute();
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
