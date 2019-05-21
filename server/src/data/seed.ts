@@ -1,5 +1,4 @@
-import { createConnection, Connection, getRepository } from 'typeorm';
-import entities from './entities';
+import { getRepository } from 'typeorm';
 import { User } from './entities/user';
 import { encryptPassword } from '../security';
 import { Role } from './entities/role';
