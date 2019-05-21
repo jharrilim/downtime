@@ -63,15 +63,17 @@ async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<Serv
 async function runMaster() {
     let conn: Connection | null = null;
     try {
+        logger.info('Running master.');
         if (process.env.NODE_ENV === 'production') {
+            logger.info('Environment is production. Running migrations.');
             conn = await createConnection();
             await conn.runMigrations();
         } else {
-            logger.debug('Creating connection and seeding data.');
+            logger.info('Creating connection and seeding data.');
             conn = await createConnection();
             await seed();
         }
-        const workerCount = cpus().length;
+        const workerCount = process.env.NODE_ENV === 'production' ? cpus().length : 1;
         logger.info(`Creating ${workerCount} workers.`);
         for (let i = 0; i < workerCount; i++) {
             fork();
