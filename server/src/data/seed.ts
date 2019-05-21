@@ -3,11 +3,12 @@ import entities from './entities';
 import { User } from './entities/user';
 import { encryptPassword } from '../security';
 import { Role } from './entities/role';
+import { Roles } from './roles';
 
 export async function seed() {
     // Init Roles
     const roleRepository = getRepository(Role);
-    const defaultRoles = roleRepository.create([{ name: 'general' }, { name: 'admin' }]);
+    const defaultRoles = roleRepository.create([{ name: Roles.General }, { name: Roles.Admin }]);
     await roleRepository.save(defaultRoles);
 
     // Init Default User
