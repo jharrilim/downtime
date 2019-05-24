@@ -1,6 +1,6 @@
-const { isMaster } = require('cluster');
-
 // @ts-check
+
+const { isMaster } = require('cluster');
 
 /**
  * @type {import("typeorm").ConnectionOptions}

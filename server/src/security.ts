@@ -81,7 +81,7 @@ export async function authChecker(resolverData: Partial<ResolverData<Context>>, 
     }
     const user = resolverData.context.user;
     if (roles.length === 0) // if `@Authorized()`, check only is user exist
-        return user !== undefined;
+        return true;
     if (!user) // and if no user, restrict access
         return false;
     const userRepository = getRepository(User);
