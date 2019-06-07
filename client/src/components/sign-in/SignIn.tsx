@@ -115,7 +115,7 @@ const SignIn = () => {
         if (data) {
           
           const token = data.loginWithPassword;
-          document.cookie = `secure;samesite=strict;token=${token};`;
+          document.cookie = `token=${token};secure;samesite=strict`;
           client.query<ProfileQueryResponse>({query: profileQuery}).then(resp => {
             writeStorage('user', JSON.stringify(resp.data.profile));
             
