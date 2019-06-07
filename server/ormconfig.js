@@ -15,10 +15,10 @@ const connectionOptions = {
     entities: [`./dist/data/entities/*.js`],
     migrations: [`./dist/data/migrations/*.js`],
     migrationsTableName: 'downtime_migrations',
-    synchronize: (process.env.NODE_ENV !== 'production') && isMaster,
+    synchronize: false,
     logger: 'advanced-console',
     logging: 'all',
-    dropSchema: (process.env.NODE_ENV !== 'production') && isMaster,
+    dropSchema: false,
     cache: true,
     cli: {
         migrationsDir: `./src/data/migrations`,

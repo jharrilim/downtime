@@ -8,6 +8,7 @@ import { Context } from "./data/resolvers/types/context";
 import { getRepository } from "typeorm";
 
 const rf = promisify(readFile);
+
 const keyPath = '/etc/certs/key.pem';
 
 type JWTResult<T> = {
@@ -48,7 +49,7 @@ export function encryptPassword(password: string, salt: string = generateSalt())
  * @returns {Promise<JWTResult<User>>}
  */
 export async function parseUserFromToken(token: string): Promise<JWTResult<User>> {
-    const privateKey = await rf(keyPath);
+    const privateKey = process.env.NODE_ENV === 'production' ? await rf(keyPath) : 'secretkey';
     return verify(token, privateKey, { algorithms: ['RS256'] }) as JWTResult<User>;
 }
 
@@ -60,7 +61,7 @@ export async function parseUserFromToken(token: string): Promise<JWTResult<User>
  * @returns {Promise<string>}
  */
 export async function tokenifyUser(user: User): Promise<string> {
-    const privateKey = await rf(keyPath);
+    const privateKey = process.env.NODE_ENV === 'production' ? await rf(keyPath) : 'secretkey';
     const userToken: Partial<JWTResult<User>> = {
         data: user
     };
@@ -76,14 +77,14 @@ export async function tokenifyUser(user: User): Promise<string> {
  * @returns {Promise<boolean>} True if user is authorized, false if not.
  */
 export async function authChecker(resolverData: Partial<ResolverData<Context>>, roles: string[]) {
-    if (!resolverData.context) {
+    if (roles.length === 0) // No roles means no auth; let it go
+        return true;
+
+    if (!resolverData || !resolverData.context || !resolverData.context.user) {
         return false;
     }
-    const user = resolverData.context.user;
-    if (roles.length === 0) // if `@Authorized()`, check only is user exist
-        return true;
-    if (!user) // and if no user, restrict access
-        return false;
+    const { user } = resolverData.context;
+
     const userRepository = getRepository(User);
     const foundUser = await userRepository.findOne({ 
         where: { 

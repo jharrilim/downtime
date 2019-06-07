@@ -55,7 +55,7 @@ export class UserResolver {
         try {
             const role = await this.roleRepository.findOne({ where: { name: Roles.General }});
             if(!role) {
-                throw Error('Could get role "General" from the database');
+                throw Error('Could not get role "General" from the database');
             }
             const user = await this.userRepository.create({
                 email,

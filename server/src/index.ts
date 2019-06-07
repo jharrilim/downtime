@@ -12,6 +12,7 @@ import { isMaster, fork, on as clusterOn } from 'cluster';
 import { cpus } from 'os';
 import { GraphQLSchema } from 'graphql';
 import { logger } from './logging';
+import { ContextFunction } from 'apollo-server-core';
 
 dotenv.config();
 logger.info('Starting...');
@@ -28,28 +29,29 @@ export async function createSchema() {
     return schema;
 }
 
+
+
 async function createServer(schema: GraphQLSchema, defaultUser: User) {
-    return new ApolloServer({
-        schema, context: async ({ req }): Promise<Context | null> => {
-            if (process.env.NODE_ENV !== 'production') {
-                return { user: defaultUser } as Context;
-            }
-            const token = req.headers.authorization;
-            if (token !== undefined) {
-                const userRepository = getRepository(User);
-                const userFromToken = await parseUserFromToken(token);
-                const user = await userRepository.findOne({
-                    where: {
-                        id: userFromToken.data.id,
-                        email: userFromToken.data.email,
-                        username: userFromToken.data.username
-                    }
-                });
-                return { user } as Context;
-            }
-            return null;
-        },
-    });
+    const context: ContextFunction = async ({ req }): Promise<Context | null> => {
+        if (process.env.NODE_ENV !== 'production') {
+            return { user: defaultUser } as Context;
+        }
+        const token = req.headers.authorization;
+        if (token !== undefined) {
+            const userRepository = getRepository(User);
+            const userFromToken = await parseUserFromToken(token);
+            const user = await userRepository.findOne({
+                where: {
+                    id: userFromToken.data.id,
+                    email: userFromToken.data.email,
+                    username: userFromToken.data.username
+                }
+            });
+            return { user } as Context;
+        }
+        return null;
+    };
+    return new ApolloServer({ schema, context });
 }
 
 async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<ServerInfo> {
