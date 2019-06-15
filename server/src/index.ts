@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as dotenv from 'dotenv';
-import { ApolloServer, ServerInfo } from 'apollo-server';
+import { ApolloServer } from 'apollo-server-express';
 import { Container } from 'typedi';
 import { useContainer, getRepository, Connection, createConnection } from 'typeorm';
 import { buildSchema } from "type-graphql";
@@ -13,6 +13,8 @@ import { cpus } from 'os';
 import { GraphQLSchema } from 'graphql';
 import { logger } from './logging';
 import { ContextFunction } from 'apollo-server-core';
+import express, { Request } from 'express';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 logger.info('Starting...');
@@ -32,11 +34,11 @@ export async function createSchema() {
 
 
 async function createServer(schema: GraphQLSchema, defaultUser: User) {
-    const context: ContextFunction = async ({ req }): Promise<Context | null> => {
+    const context: ContextFunction = async ({ req }: { req: Request }): Promise<Context | null> => {
         if (process.env.NODE_ENV !== 'production') {
             return { user: defaultUser } as Context;
         }
-        const token = req.headers.authorization;
+        const { token } = req.cookies();
         if (token !== undefined) {
             const userRepository = getRepository(User);
             const userFromToken = await parseUserFromToken(token);
@@ -54,12 +56,16 @@ async function createServer(schema: GraphQLSchema, defaultUser: User) {
     return new ApolloServer({ schema, context });
 }
 
-async function bootstrap(schema: GraphQLSchema, defaultUser: User): Promise<ServerInfo> {
+async function bootstrap(schema: GraphQLSchema, defaultUser: User) {
     const port = +(process.env.PORT || 8080);
     useContainer(Container);
     await createConnection();
+    const app = express();
+    app.use(cookieParser());
     const server = await createServer(schema, defaultUser);
-    return await server.listen(port);
+    server.applyMiddleware({ app });
+
+    return await app.listen(port);
 }
 
 async function runMaster() {
@@ -101,8 +107,8 @@ async function runWorker() {
             }
         }))!;
         const schema = await createSchema();
-        const { url } = await bootstrap(schema, defaultUser);
-        logger.info(`🚀 Server ready at ${url}`);
+        const s = await bootstrap(schema, defaultUser);
+        logger.info(`🚀 Server ready at ${s.address()}`);
 
     } catch (reason) {
         logger.error(reason);
