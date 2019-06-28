@@ -38,7 +38,7 @@ async function createServer(schema: GraphQLSchema, defaultUser: User) {
         if (process.env.NODE_ENV !== 'production') {
             return { user: defaultUser } as Context;
         }
-        const { token } = req.cookies();
+        const { token } = req.cookies;
         if (token !== undefined) {
             const userRepository = getRepository(User);
             const userFromToken = await parseUserFromToken(token);
