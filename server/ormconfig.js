@@ -15,7 +15,7 @@ const connectionOptions = {
     entities: [`./dist/data/entities/*.js`],
     migrations: [`./dist/data/migrations/*.js`],
     migrationsTableName: 'downtime_migrations',
-    synchronize: false,
+    synchronize: process.env.NODE_ENV !== 'production',
     logger: 'advanced-console',
     logging: 'all',
     dropSchema: false,
