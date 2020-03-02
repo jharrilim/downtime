@@ -28,7 +28,7 @@ const queryResultHandler = (
     );
 
   return (
-    <Grid container spacing={24}>
+    <Grid container spacing={2}>
       {data!.posts
         .sort((a, b) => -moment(a.dateCreated).diff(b.dateCreated))
         .map(({ content, author, dateCreated, title }) => {

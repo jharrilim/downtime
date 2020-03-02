@@ -12,25 +12,25 @@ const styles = (theme: Theme) => ({
   },
   title: {
     width: "95%",
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(),
     border: 'none'
   },
   content: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(),
     width: "95%"
   },
   button: {
     backgroundColor: theme.palette.grey[200],
-    margin: theme.spacing.unit,
+    margin: theme.spacing(),
     paddingLeft: "1em",
     paddingRight: "1em"
 
   },
   leftIcon: {
-    marginRight: theme.spacing.unit,
+    marginRight: theme.spacing(),
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit,
+    marginLeft: theme.spacing(),
   },
   titleInput: {
     fontSize: "5em",

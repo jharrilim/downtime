@@ -24,8 +24,8 @@ const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDec
 const settingsLink = (props: any) => <Link {...props} to="/settings" style={{ textDecoration: "none" }} />;
 
 const serverUrl = process.env.NODE_ENV !== 'production'
-  ? `http://${location.hostname}:8080`
-  : process.env.SERVER_URL || `http://${location.hostname}:${location.port}/api`;
+  ? `http://${window.location.hostname}:8080`
+  : process.env.SERVER_URL || `http://${window.location.hostname}:${window.location.port}/api`;
 
 const client = new ApolloClient({
   uri: serverUrl
