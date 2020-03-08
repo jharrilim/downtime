@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, withStyles, Theme, createStyles, Grid, Divider, WithStyles } from '@material-ui/core';
+import { Typography, withStyles, Theme, createStyles, Grid, WithStyles } from '@material-ui/core';
 import { SettingsOptionsList } from './SettingsOptionsList';
 import { Route } from 'react-router';
 import { Profile } from './profile/Profile';

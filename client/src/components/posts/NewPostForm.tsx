@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid, FormHelperText, Modal } from '@material-ui/core';
-import { Mutation, FetchResult } from 'react-apollo';
+import { Typography, Theme, WithStyles, TextField, withStyles, Button, Icon, Grid } from '@material-ui/core';
+import { useMutation } from 'react-apollo';
 import { postsQuery } from '../../data/queries/posts';
 import { createPost, CreatePostReturnType } from '../../data/mutations/create-post';
 import { PostModel } from '../../data/models/Post.model';
@@ -55,7 +55,7 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
     title: '',
     content: ''
   } as FormState);
-  const [user, mutUser] = useLocalStorage('user');
+  const [user] = useLocalStorage('user');
   const submit = () => {
     if (user)
       onSubmit(postState);
@@ -105,35 +105,34 @@ const NewPostForm = ({ classes, onSubmit }: NewPostFormPropTypes) => {
   );
 };
 
-const NewPostFormMutation = (props: NewPostFormPropTypes) => (
-  <Mutation
-    mutation={createPost}
-    update={(cache, { data }: FetchResult<CreatePostReturnType>) => {
-      let posts = cache.readQuery<Array<PostModel>>({ query: postsQuery });
-      if (!posts) {
-        posts = [];
+const NewPostFormMutation = (props: NewPostFormPropTypes) => {
+  const [mutateFn, { loading, error }] = useMutation<CreatePostReturnType>(
+    createPost,
+    {
+      update: (cache, { data }) => {
+        let posts = cache.readQuery<Array<PostModel>>({ query: postsQuery });
+        if (!posts) {
+          posts = [];
+        }
+        if (data !== undefined && data !== null) {
+          posts.push({ ...data });
+          cache.writeQuery({
+            query: postsQuery,
+            data: {
+              posts
+            }
+          });
+        }
       }
-      if (data !== undefined) {
-        posts.push({ ...data });
-        cache.writeQuery({
-          query: postsQuery,
-          data: {
-            posts
-          }
-        });
-      }
-    }}
-  >
-    {(mutateFn, { loading, error }) => {
-      if (loading) return <Typography variant="h5" >Loading...</Typography>;
-      if (error) {
-        console.error(error);
-        return <Typography variant="h5" >Error creating post. {error.message}</Typography>;
-      }
-      return <NewPostForm onSubmit={(evt) => mutateFn({ variables: { postInput: evt } })} classes={props.classes} />;
-    }}
-  </Mutation>
-);
+    }
+  );
+  if (loading) return <Typography variant="h5" >Loading...</Typography>;
+  if (error) {
+    console.error(error);
+    return <Typography variant="h5" >Error creating post. {error.message}</Typography>;
+  }
+  return <NewPostForm onSubmit={(evt) => mutateFn({ variables: { postInput: evt } })} classes={props.classes} />;
+};
 
 const NewPost = withStyles(styles)(NewPostFormMutation);
 

@@ -1,5 +1,9 @@
 # Downtime
 
+## Development
+
+**Use VSCode to take advantage of the devcontainer and workspace setup to ensure a consistent development environment across all dev machines.**
+
 So far:
 
 ## On the Server

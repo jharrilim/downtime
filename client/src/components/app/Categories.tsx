@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStyles, withStyles, Theme, WithStyles, Toolbar, Typography } from '@material-ui/core';
+import { createStyles, withStyles, Theme, WithStyles, Toolbar } from '@material-ui/core';
 
 import { Category } from './Category';
 

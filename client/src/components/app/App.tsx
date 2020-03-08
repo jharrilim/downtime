@@ -1,6 +1,4 @@
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
-import ApolloClient from 'apollo-boost';
 import { withStyles, CssBaseline, WithStyles, Toolbar, Button, Typography, Tooltip } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
@@ -18,17 +16,22 @@ import { SignIn } from '../sign-in/SignIn';
 import { Settings } from '../settings/Settings';
 import { Categories } from './Categories';
 import { appStyles, appTheme } from './App.styles';
+import { ApolloClient } from 'apollo-client';
+import { ApolloProvider } from 'react-apollo';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
 
 const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
 const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
 const settingsLink = (props: any) => <Link {...props} to="/settings" style={{ textDecoration: "none" }} />;
 
 const serverUrl = process.env.NODE_ENV !== 'production'
-  ? `http://${window.location.hostname}:8080`
-  : process.env.SERVER_URL || `http://${window.location.hostname}:${window.location.port}/api`;
+  ? 'http://localhost:8080/graphql'
+  : process.env.SERVER_URL ?? `http://${window.location.hostname}:${window.location.port}/graphql`;
 
 const client = new ApolloClient({
-  uri: serverUrl
+  cache: new InMemoryCache(),
+  link: new HttpLink({ uri: serverUrl }),
 });
 
 const mockCategories = ['foo', 'bar', 'baz', 'qux', 'qwop'];
@@ -53,7 +56,7 @@ const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
                   <Button component={newPostLink} size="small" ><AddIcon /></Button>
                 </Tooltip>
                 <Tooltip title="Settings">
-                  <Button component={settingsLink} size="small"><SettingsIcon /></Button> 
+                  <Button component={settingsLink} size="small"><SettingsIcon /></Button>
                 </Tooltip>
                 <Typography
                   component="h1"
@@ -72,7 +75,7 @@ const App = withStyles(appStyles)(({ classes }: AppPropTypes) => {
                   <SearchIcon />
                 </IconButton>
                 <SignUp />
-              { !user && <SignIn /> }
+                {!user && <SignIn />}
               </Toolbar>
               <Categories categories={mockCategories} />
               <main>

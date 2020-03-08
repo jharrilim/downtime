@@ -18,7 +18,7 @@ const connectionOptions = {
     synchronize: process.env.NODE_ENV !== 'production',
     logger: 'advanced-console',
     logging: 'all',
-    dropSchema: false,
+    dropSchema: true,
     cache: true,
     cli: {
         migrationsDir: `./src/data/migrations`,

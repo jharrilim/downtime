@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles } from '@material-ui/core';
 import { ValidationIcon } from '../icons/ValidationIcon';
-import { Mutation } from 'react-apollo';
-import { createUser, CreateUserInput } from '../../data/mutations/create-user';
+import { useMutation } from 'react-apollo';
+import { createUser, CreateUserOutput } from '../../data/mutations/create-user';
 import { SignUpButton } from './SignUpButton';
 import { useLocalStorage, writeStorage, deleteFromStorage } from '@rehooks/local-storage';
 import { SlowSnackbar } from '../common/Snackbars';
@@ -31,17 +31,17 @@ interface SignUpPropTypes extends WithStyles<typeof styles> {
 
 
 export const SignUp = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) => {
-  const [formIsOpen, mutFormIsOpen] = useState(false);
-  const [email, mutEmail] = useState('');
-  const [password, mutPassword] = useState('');
-  const [confirmPassword, mutConfirmPassword] = useState('');
-  const [passwordIsValid, mutPasswordIsValid] = useState(false);
-  const [emailIsValid, mutEmailIsValid] = useState(false);
+  const [formIsOpen, setFormIsOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordIsValid, setPasswordIsValid] = useState(false);
+  const [emailIsValid, setEmailIsValid] = useState(false);
   const [user] = useLocalStorage('user');
 
   const passwordChanged = (password: string) => {
-    mutPassword(password);
-    mutPasswordIsValid(
+    setPassword(password);
+    setPasswordIsValid(
       password.length >= 8 &&
       password.search(/[\d]/) > -1 &&
       password.search(/[a-z]/) > -1 &&
@@ -50,23 +50,23 @@ export const SignUp = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes
   };
 
   const emailChanged = (email: string) => {
-    mutEmail(email);
-    mutEmailIsValid(email.search(/\S+@\S+\.\S+/) > -1);
+    setEmail(email);
+    setEmailIsValid(email.search(/\S+@\S+\.\S+/) > -1);
   }
 
   const dialogClosed = () => {
-    mutFormIsOpen(false);
-    mutEmailIsValid(false);
-    mutPassword('');
-    mutConfirmPassword('');
-    mutPasswordIsValid(false);
+    setFormIsOpen(false);
+    setEmailIsValid(false);
+    setPassword('');
+    setConfirmPassword('');
+    setPasswordIsValid(false);
   };
 
   return (
     <>
       <SignUpButton
         isLoggedIn={!!user}
-        onSignUpClick={_ => mutFormIsOpen(true)}
+        onSignUpClick={_ => setFormIsOpen(true)}
         onSignOutClick={_ => deleteFromStorage('user')}
       />
       <Dialog
@@ -111,7 +111,7 @@ export const SignUp = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes
               label="Confirm Password"
               type="password"
               className={classes.confirmPassword}
-              onChange={evt => mutConfirmPassword(evt.target.value)}
+              onChange={evt => setConfirmPassword(evt.target.value)}
               autoComplete="new-password"
             />
             <ValidationIcon isValid={passwordIsValid && password === confirmPassword} />
@@ -123,7 +123,7 @@ export const SignUp = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes
             <Button
               onClick={e => {
                 e.preventDefault();
-                mutFormIsOpen(false);
+                setFormIsOpen(false);
                 onSubmit({ password, email });
               }}
               color="primary"
@@ -140,30 +140,20 @@ export const SignUp = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes
 
 
 
-const SignUpMutation = () => (
-  <Mutation<{ createUser: CreateUserInput }> mutation={createUser}>
-    {(mutateFn, { data, error }) => {
-      if (error) {
-        if (error.graphQLErrors) {
-          return (
-            <>
-              <SlowSnackbar message={error.graphQLErrors[0].message} />
-              <SignUp onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />
-            </>
-          );
-        }
-      }
-      if (data) {
-        const userInfo = {
-          id: data.createUser.id,
-          username: data.createUser.username,
-          email: data.createUser.email
-        }
-        writeStorage('user', JSON.stringify(userInfo));
-      }
-      return <SignUp onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
-    }}
-  </Mutation>
-);
-
+const SignUpMutation = () => {
+  const [mutateFn, { data, error }] = useMutation<CreateUserOutput>(createUser);
+  if (error?.graphQLErrors) {
+    return (
+      <>
+        <SlowSnackbar message={error.graphQLErrors[0].message} />
+        <SignUp onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />
+      </>
+    );
+  }
+  if (data) {
+    const { createUser: { email, id, username } } = data;
+    writeStorage('user', JSON.stringify({ email, id, username }));
+  }
+  return <SignUp onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
+};
 export default SignUpMutation;

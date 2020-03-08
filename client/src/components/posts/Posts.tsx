@@ -6,7 +6,7 @@ import { Typography, Grid } from '@material-ui/core';
 import { postsQuery } from '../../data/queries/posts';
 import { PostModel } from '../../data/models/Post.model';
 import moment from 'moment';
-import { OperationVariables } from 'apollo-boost';
+import { OperationVariables } from 'react-apollo';
 
 interface Response {
   posts: PostModel[];

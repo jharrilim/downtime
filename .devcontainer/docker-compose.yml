@@ -22,20 +22,26 @@ services:
     volumes:
       - ..:/workspace:cached
     environment:
-      DB_USER: root
-      DB_PASSWORD: example
+      DB_USER: downtime
+      DB_PASSWORD: development_passw0rd
+      DB_HOST: postgres
+      DB_PORT: 5432
+      SERVER_URL: http://web:8080/graphql # Used in client app
 
     # Overrides default command so things don't shut down after the process ends.
     command: sleep infinity
     
     links:
-      - mongo
+      - postgres
 
-  mongo:
-    image: mongo
+  postgres:
+    image: postgres
     restart: unless-stopped
+    ports:
+      - 5432:5432
+      - 5433:5433
     volumes:
-      - /data/db
+      - /var/lib/postgresql/data
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
+      POSTGRES_USER: downtime
+      POSTGRES_PASSWORD: development_passw0rd

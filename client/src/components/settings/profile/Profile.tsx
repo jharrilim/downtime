@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withStyles, Theme, createStyles, Typography, Card, CardHeader, Avatar, WithStyles, CardMedia, CardContent, Tabs, Tab } from '@material-ui/core';
+import { withStyles, Theme, createStyles, Typography, Card, CardHeader, Avatar, WithStyles, CardContent, Tabs, Tab } from '@material-ui/core';
 import useLocalStorage from '@rehooks/local-storage';
 import { User } from '../../../data/models/User.model';
 import { grey } from '@material-ui/core/colors';
