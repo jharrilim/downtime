@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles, Snackbar } from '@material-ui/core';
+import { DialogActions, Button, TextField, DialogContent, DialogTitle, Dialog, DialogContentText, FormHelperText, Theme, WithStyles, withStyles } from '@material-ui/core';
 import { ValidationIcon } from '../icons/ValidationIcon';
 import { Mutation } from 'react-apollo';
-import { createUser } from '../../data/mutations/create-user';
+import { createUser, CreateUserInput } from '../../data/mutations/create-user';
 import { SignUpButton } from './SignUpButton';
 import { useLocalStorage, writeStorage, deleteFromStorage } from '@rehooks/local-storage';
 import { SlowSnackbar } from '../common/Snackbars';
@@ -30,14 +30,14 @@ interface SignUpPropTypes extends WithStyles<typeof styles> {
 
 
 
-const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) => {
+export const SignUp = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) => {
   const [formIsOpen, mutFormIsOpen] = useState(false);
   const [email, mutEmail] = useState('');
   const [password, mutPassword] = useState('');
   const [confirmPassword, mutConfirmPassword] = useState('');
   const [passwordIsValid, mutPasswordIsValid] = useState(false);
   const [emailIsValid, mutEmailIsValid] = useState(false);
-  const [user, mutUser] = useLocalStorage('user');
+  const [user] = useLocalStorage('user');
 
   const passwordChanged = (password: string) => {
     mutPassword(password);
@@ -140,34 +140,30 @@ const SignUpForm = withStyles(styles)(({ classes, onSubmit }: SignUpPropTypes) =
 
 
 
-const SignUpMutation = () => {
-  return (
-    <Mutation mutation={createUser}>
-      {(mutateFn, { data, error }) => {
-        if (error) {
-          if (error.graphQLErrors) {
-            return (
-              <>
-                <SlowSnackbar message={error.graphQLErrors[0].message} />
-                <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />
-              </>
-            );
-          }
+const SignUpMutation = () => (
+  <Mutation<{ createUser: CreateUserInput }> mutation={createUser}>
+    {(mutateFn, { data, error }) => {
+      if (error) {
+        if (error.graphQLErrors) {
+          return (
+            <>
+              <SlowSnackbar message={error.graphQLErrors[0].message} />
+              <SignUp onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />
+            </>
+          );
         }
-        if (data) {
-          const userInfo = {
-            id: data.createUser.id,
-            username: data.createUser.username,
-            email: data.createUser.email
-          }
-          writeStorage('user', JSON.stringify(userInfo));
+      }
+      if (data) {
+        const userInfo = {
+          id: data.createUser.id,
+          username: data.createUser.username,
+          email: data.createUser.email
         }
-        return <SignUpForm onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
-      }}
-    </Mutation>
-  )
-};
+        writeStorage('user', JSON.stringify(userInfo));
+      }
+      return <SignUp onSubmit={evt => mutateFn({ variables: { userInput: evt } })} />;
+    }}
+  </Mutation>
+);
 
-
-const SignUp = SignUpMutation;
-export { SignUp };
+export default SignUpMutation;

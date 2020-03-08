@@ -17,6 +17,6 @@ export const PostStory = () =>
     title={'Post Story'}
   />;
 
-PostStory.stories = {
-  title: 'Post'
+PostStory.story = {
+  name: 'Simple'
 };

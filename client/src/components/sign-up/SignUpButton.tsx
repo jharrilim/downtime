@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Button } from "@material-ui/core";
 
 interface SignUpButtonPropTypes {
@@ -7,18 +7,14 @@ interface SignUpButtonPropTypes {
   onSignOutClick: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void
 }
 
-export const SignUpButton = ({ isLoggedIn, onSignUpClick, onSignOutClick }: SignUpButtonPropTypes) => {
-  return (
-    <>
-      {!isLoggedIn ?
-        <Button onClick={ev => onSignUpClick(ev)}>
-          Register
-        </Button>
-        :
-        <Button color="secondary" onClick={ev => onSignOutClick(ev)}>
-          Sign Out
-        </Button>
-      }
-    </>
-  );
-}
+export const SignUpButton: FC<SignUpButtonPropTypes> = ({
+  isLoggedIn,
+  onSignUpClick,
+  onSignOutClick
+}) => isLoggedIn
+  ? <Button color="secondary" onClick={ev => onSignOutClick(ev)}>
+      Sign Out
+    </Button>
+  : <Button onClick={ev => onSignUpClick(ev)}>
+      Register
+    </Button>;

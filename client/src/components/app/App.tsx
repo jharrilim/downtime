@@ -11,7 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { Posts } from '../posts/Posts';
 import HomeIcon from '@material-ui/icons/Home';
 import { NewPost } from '../posts/NewPostForm';
-import { SignUp } from '../sign-up/SignUp';
+import SignUp from '../sign-up/SignUp';
 import { useLocalStorage } from '@rehooks/local-storage';
 import { User } from '../../data/models/User.model';
 import { SignIn } from '../sign-in/SignIn';

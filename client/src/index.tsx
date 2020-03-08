@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/app/App';
 import * as serviceWorker from './serviceWorker';
-import { config } from 'dotenv';
+import { config } from 'dotenv'; // Possible through https://webpack.js.org/plugins/environment-plugin/
 
 config();
 ReactDOM.render(<App />, document.getElementById('root'));
