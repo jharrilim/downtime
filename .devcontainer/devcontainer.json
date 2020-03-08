@@ -14,7 +14,9 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
-		"dbaeumer.vscode-eslint"
+		"dbaeumer.vscode-eslint",
+		"christian-kohler.npm-intellisense",
+		"pflannery.vscode-versionlens"
 	]
 
 	// Uncomment the next line if you want start specific services in your Docker Compose config.
