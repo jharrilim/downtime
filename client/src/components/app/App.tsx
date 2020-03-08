@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { withStyles, CssBaseline, WithStyles, Toolbar, Button, Typography, Tooltip } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, LinkProps } from 'react-router-dom';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -21,9 +21,9 @@ import { ApolloProvider } from 'react-apollo';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 
-const homeLink = (props: any) => <Link {...props} to="/" style={{ textDecoration: "none" }} />;
-const newPostLink = (props: any) => <Link {...props} to="/post" style={{ textDecoration: "none" }} />;
-const settingsLink = (props: any) => <Link {...props} to="/settings" style={{ textDecoration: "none" }} />;
+const homeLink = forwardRef<Link, Omit<LinkProps, 'to'>>((props, ref) => <Link {...props} ref={ref} to="/" style={{ textDecoration: "none" }} />);
+const newPostLink = forwardRef<Link, Omit<LinkProps, 'to'>>((props, ref) => <Link {...props} ref={ref} to="/post" style={{ textDecoration: "none" }} />);
+const settingsLink = forwardRef<Link, Omit<LinkProps, 'to'>>((props, ref) => <Link {...props} ref={ref} to="/settings" style={{ textDecoration: "none" }} />);
 
 const serverUrl = process.env.NODE_ENV !== 'production'
   ? 'http://localhost:8080/graphql'
