@@ -2,14 +2,12 @@ import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import { ApolloServer } from 'apollo-server-express';
 import { Container } from 'typedi';
-import { useContainer, getRepository, Connection, createConnection } from 'typeorm';
-import { buildSchema } from "type-graphql";
+import { useContainer, getRepository, Connection, createConnection, getConnection } from 'typeorm';
+import { buildSchema } from 'type-graphql';
 import { seed } from './data/seed';
 import { Context } from './data/resolvers/types/context';
 import { User } from './data/entities/user';
 import { parseUserFromToken, authChecker } from './security';
-import { isMaster, fork, on as clusterOn } from 'cluster';
-import { cpus } from 'os';
 import { GraphQLSchema } from 'graphql';
 import { logger } from './logging';
 import { ContextFunction } from 'apollo-server-core';
@@ -59,7 +57,7 @@ async function createServer(schema: GraphQLSchema, defaultUser: User) {
 async function bootstrap(schema: GraphQLSchema, defaultUser: User) {
     const port = +(process.env.PORT || 8080);
     useContainer(Container);
-    await createConnection();
+    // await createConnection();
     const app = express();
     app.use(cookieParser());
     const server = await createServer(schema, defaultUser);
@@ -68,38 +66,19 @@ async function bootstrap(schema: GraphQLSchema, defaultUser: User) {
     return await app.listen(port);
 }
 
-async function runMaster() {
-    let conn: Connection | null = null;
-    try {
-        logger.info('Running master.');
-        if (process.env.NODE_ENV === 'production') {
-            logger.info('Environment is production. Running migrations.');
-            conn = await createConnection();
-            await conn.runMigrations();
-        } else {
-            logger.info('Creating connection and seeding data.');
-            conn = await createConnection();
-            await seed();
-        }
-        const workerCount = process.env.NODE_ENV === 'production' ? cpus().length : 1;
-        logger.info(`Creating ${workerCount} workers.`);
-        for (let i = 0; i < workerCount; i++) {
-            fork();
-        }
-    } finally {
-        if (conn)
-            await conn.close();
+async function initDb() {
+    logger.info('Running master.');
+    if (process.env.NODE_ENV === 'production') {
+        logger.info('Environment is production. Running migrations.');
+        return await getConnection().runMigrations();
+    } else {
+        logger.info('Creating connection and seeding data.');
+        await seed();
     }
-    clusterOn('exit', worker => {
-        logger.warn(`${worker.id} died.`);
-        fork();
-    });
 }
 
-async function runWorker() {
-    let conn: Connection | null = null;
+async function startServer() {
     try {
-        conn = await createConnection();
         const userRepository = getRepository(User);
         const defaultUser = (await userRepository.findOne({
             where: {
@@ -108,20 +87,16 @@ async function runWorker() {
         }))!;
         const schema = await createSchema();
         const s = await bootstrap(schema, defaultUser);
-        logger.info(`🚀 Server ready at ${s.address()}`);
-
+        const addr = s.address();
+        if (addr !== null)
+            logger.info(`🚀 Server ready at ${typeof addr === 'string' ? addr : `${addr.address}:${addr.port}`}`);
     } catch (reason) {
         logger.error(reason);
-    } finally {
-        if (conn)
-            await conn.close();
     }
 }
 
 void async function main() {
-    if (isMaster) {
-        await runMaster();
-    } else {
-        await runWorker();
-    }
+    await createConnection();
+    await initDb();
+    await startServer();
 }().catch(console.error);

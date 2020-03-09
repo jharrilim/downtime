@@ -7,7 +7,11 @@ import { Roles } from './roles';
 export async function seed() {
     // Init Roles
     const roleRepository = getRepository(Role);
-    const defaultRoles = roleRepository.create([{ name: Roles.General }, { name: Roles.Admin }]);
+    const defaultRoles = roleRepository.create([
+        { name: Roles.General },
+        { name: Roles.Admin },
+        { name: Roles.Moderator}
+    ]);
     await roleRepository.save(defaultRoles);
 
     // Init Default User
