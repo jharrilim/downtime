@@ -23,7 +23,7 @@
     "@accounts/typeorm": "^0.24.0",
     "@accounts/types": "^0.24.0",
     "@graphql-modules/core": "^0.7.14",
-    "apollo-server": "^2.7.0",
+    "apollo-server": "^2.14.2",
     "apollo-server-express": "^2.7.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
